@@ -36,12 +36,17 @@ JWTKEY=""
 PORT=5000
 ```
 
-4. Install the App dependencies:
+4. Migrate Your Database:
+``` bash
+npx prisma migrate dev --name init
+```
+
+5. Install the App dependencies:
 ``` bash
 npm install
 ```
 
-5. Start the App:
+6. Start the App:
 ```bash
 npm run start
 ```
