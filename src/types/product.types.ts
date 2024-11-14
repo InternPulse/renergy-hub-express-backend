@@ -1,6 +1,6 @@
 import { User } from './user.types';
 import { OrderReturn, OrderItem } from './order.types';
-import { Cart } from './user.types';
+import { Cart } from './cart.types';
 
 export interface Product {
   id: number;
@@ -36,4 +36,13 @@ export interface ProductInformation {
   value: string;
   productId: number;
   product: Product;
+}
+
+
+export interface WishList {
+
+}
+
+export interface Review {
+
 }
