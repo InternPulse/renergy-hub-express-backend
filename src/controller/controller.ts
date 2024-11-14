@@ -1,9 +1,10 @@
 
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
+import { Order } from "../types";
 import { success } from "../util/response";
 import OrderManagementService from "../services/order.service";
-import { Order } from "../types";
+import { CreateOrderDto } from "../dto/orders/create-order.dto";
 
 const orderService: OrderManagementService = new OrderManagementService();
 
@@ -24,8 +25,9 @@ export const createOrder = asyncHandler(async (req: Request, res: Response, next
 
     try 
     {
-        
-        success(res, 201, [], "Book created successfully");
+        const createOrderDto: CreateOrderDto = req.body;
+        const createdOrder = await orderService.createOrder(createOrderDto);
+        success(res, 201, createdOrder, "Order created successfully");
     }
     catch (err)
     {

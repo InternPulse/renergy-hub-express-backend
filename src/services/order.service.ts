@@ -5,8 +5,8 @@ export default class OrderManagementService {
 
     private readonly orderRepository: OrderRepository = new OrderRepository();
 
-    async createOrder( data: CreateOrderDto) {
-
+    async createOrder(data: CreateOrderDto) {
+        return await this.orderRepository.create(data);
     }
 
 

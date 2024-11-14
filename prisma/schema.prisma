@@ -103,7 +103,8 @@ model Order {
   id              Int           @id @default(autoincrement())
   userId          Int
   orderDate       DateTime
-  paymentStatus   String
+  paymentStatus   PaymentStatus  @default(PENDING)
+  orderStatus     OrderStatus   @default(PENDING)
   totalAmount     Decimal
   user            User          @relation(fields: [userId], references: [id])
   orderItems      OrderItem[]
@@ -175,4 +176,20 @@ model OrderReturn {
   user            User     @relation(fields: [userId], references: [id])
   product         Product  @relation(fields: [productId], references: [id])
   order           Order    @relation(fields: [orderId], references: [id])
+}
+
+
+
+enum PaymentStatus {
+  PENDING,
+  COMPLETED,
+  FAILED,
+}
+
+enum OrderStatus {
+  PENDING,
+  PROCESSING,
+  SHIPPED,
+  DELIVERED,
+  CANCELLED,
 }
