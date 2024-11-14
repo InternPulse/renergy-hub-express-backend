@@ -18,13 +18,13 @@ model User {
   id              Int               @id @default(autoincrement())
   firstName       String
   lastName        String
-  username        String            @unique
-  email           String            @unique
+  username        String            
+  email           String            
   password        String
   userType        String
   registerType    String
   registrationDate DateTime
-  phoneNumber     Int
+  phoneNumber     String          // Changed from Int to String for compatibility with various phone number formats
   cart           Cart[]
   notifications  Notification[]
   wishlist       WishList[]
@@ -34,6 +34,8 @@ model User {
   addresses      ShippingAddress[]
   products       Product[]
   orderReturns   OrderReturn[]
+
+  @@unique([username, email])       // Combined unique constraint for username and email
 }
 
 model Notification {
