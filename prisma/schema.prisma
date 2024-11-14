@@ -21,10 +21,10 @@ model User {
   username        String      @unique      
   email           String      @unique     
   password        String
-  confirmPassword String
-  userType        String
-  registerType    String
-  registrationDate DateTime
+  confirmPassword String?
+  userType        String?
+  registerType    String?
+  registrationDate DateTime @default(now())
   phoneNumber     String          // Changed from Int to String for compatibility with various phone number formats
   cart           Cart[]
   notifications  Notification[]
