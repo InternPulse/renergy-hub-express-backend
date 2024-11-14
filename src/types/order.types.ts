@@ -1,6 +1,7 @@
 import { User } from './user.types';
-import { Payment } from './payment.types';
+import { Payment, ShippingOptions } from './payment.types';
 import { Product } from './product.types';
+import { Cart } from '.';
 
 export interface Order {
   id: number;

@@ -1,4 +1,3 @@
-import { lookup } from 'dns';
 import { Router } from 'express';
 import { login } from '../controller/auth';
 
