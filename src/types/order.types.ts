@@ -1,13 +1,14 @@
 import { User } from './user.types';
 import { Payment, ShippingOptions } from './payment.types';
 import { Product } from './product.types';
-import { Cart } from '.';
+import { Cart, OrderStatus, PaymentStatus } from '.';
 
 export interface Order {
   id: number;
   userId: number;
   orderDate: Date;
-  paymentStatus: string;
+  paymentStatus: PaymentStatus;
+  orderStatus: OrderStatus;
   totalAmount: number;
   user: User;
   orderItems?: OrderItem[];

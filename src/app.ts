@@ -4,11 +4,13 @@ import express from 'express';
 import { OrderRoute } from './routes/orderRoute';
 import { PORT } from './secrets';
 import { initRoutes } from './routes/init';
-// import { initRoutes } from './routes/init.ts';
+import { errorHandler } from './util';
 
 const app: Express = express();
+// Apply middleware
+app.use(express.json());
 
-const apiVersion = '/api/v1';
+
 
 initRoutes(app);
 
@@ -20,5 +22,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+//GLobal error Handler
+app.use(errorHandler)
 
 

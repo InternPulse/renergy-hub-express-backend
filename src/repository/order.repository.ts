@@ -5,7 +5,10 @@ import prisma from "../util/db";
 export default class OrderRepository {
     async create(data: CreateOrderDto) {
         const order = await prisma.order.create({
-            data
+            data: {
+                orderDate:  new Date(),
+                totalAmount: 1000
+            }
           });
 
         return order
