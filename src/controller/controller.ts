@@ -25,7 +25,8 @@ export const createOrder = asyncHandler(async (req: Request, res: Response, next
 
     try 
     {
-        const createOrderDto: CreateOrderDto = req.body;
+        const createOrderDto = req.body;
+        console.log(createOrderDto)
         const createdOrder = await orderService.createOrder(createOrderDto);
         success(res, 201, createdOrder, "Order created successfully");
     }
