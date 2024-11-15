@@ -1,16 +1,29 @@
 import  { Express, Request, Response } from 'express';
 import { Route } from './routes/route';
 import express from 'express';
-import { OrderRoute } from './routes/orderRoute';
+import { OrderRoute } from './routes/order.route';
 import { PORT } from './secrets';
-import { initRoutes } from './routes/init';
 import { errorHandler } from './util';
+import { AuthRoute } from './routes/auth.route';
+import { initRoutes } from './routes/init';
+
+const apiVersion = '/api/v1';
 
 const app: Express = express();
 // Apply middleware
 app.use(express.json());
 
+// const routes: Record<string, Route> = {
+//     orders: new OrderRoute(),
+//     auth: new AuthRoute()
+// };
 
+// const initRoutes = () => {
+//     Object.entries(routes).forEach(([url, route]) => {
+//       app.use(`${apiVersion}/${url}`, route.initRoutes());
+//     });
+
+// }
 
 initRoutes(app);
 
@@ -23,6 +36,5 @@ app.listen(PORT, () => {
 });
 
 //GLobal error Handler
-app.use(errorHandler)
-
+app.use(errorHandler);
 
