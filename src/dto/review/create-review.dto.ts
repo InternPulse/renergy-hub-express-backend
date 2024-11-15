@@ -1,5 +1,5 @@
-export interface createReviewDto {
+export interface CreateReviewDTO {
   productId: number;
   rating: number;
-  comment?: String;
+  comment?: string;
 }
