@@ -1,7 +1,7 @@
-import { Cart } from './cart.types';
-import { Order, OrderReturn } from './order.types';
-import { Payment } from './payment.types';
-import { Product, WishList } from './product.types';
+import { Cart } from "./cart.types";
+import { Order, OrderReturn } from "./order.types";
+import { Payment } from "./payment.types";
+import { Product, WishList } from "./product.types";
 
 export interface User {
   id: number;
@@ -44,7 +44,11 @@ export interface ShippingAddress {
   user: User;
 }
 
-
 export interface Review {
-  
+  id: number;
+  userId: number;
+  productId: number;
+  rating: number;
+  comment?: string;
+  datePosted: Date;
 }
