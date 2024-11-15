@@ -19,6 +19,6 @@ router.post('/forgot-password', forgotPassword);
 
 router.post('/reset-password', resetPassword);
 
-router.post('/change-password', verifyEmail);
+router.post('/verify-email', verifyEmail);
 // social login here
 export default router;
