@@ -43,6 +43,12 @@ export const register = async (req: Request, res: Response) => {
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
+    // generate verification token
+
+    const verificationToken = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString(); // Generates a 6-digit random number
+
     // save user to database
     const newUser = await prisma.user.create({
       data: {
@@ -52,6 +58,8 @@ export const register = async (req: Request, res: Response) => {
         email,
         password: hashedPassword,
         phoneNumber,
+        verificationToken,
+        verificationTokenExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
       },
     });
 

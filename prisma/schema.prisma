@@ -26,6 +26,8 @@ model User {
   registerType    String?
   registrationDate DateTime @default(now())
   phoneNumber     String          // Changed from Int to String for compatibility with various phone number formats
+  verificationToken         String?
+  verificationTokenExpiresAt DateTime?
   cart           Cart[]
   notifications  Notification[]
   wishlist       WishList[]
