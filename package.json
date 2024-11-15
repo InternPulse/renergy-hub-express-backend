@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon"
+    "start": "npx nodemon",
+    "dev": "ts-node src/app.ts"
   },
   "author": "Backend NodeJs/Express Team",
   "license": "ISC",
