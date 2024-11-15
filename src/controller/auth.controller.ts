@@ -2,7 +2,7 @@ import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
 import generateToken from '../util/generateToken';
 import { Prisma } from '@prisma/client';
-import { verificationEmail } from '../resend/email';
+import { verificationEmail, welcomeEmail } from '../resend/email';
 import prisma from '../db/prisma';
 
 export const register = async (req: Request, res: Response) => {
@@ -130,7 +130,13 @@ export const verifyEmail = async (req: Request, res: Response) => {
       where: { id: user.id },
       data: { verificationToken: null },
     });
-    res.status(200).json({ message: 'Email verified successfully' });
+
+    // 4. Send a welcome email after verification
+    await welcomeEmail(user.email, user.firstName);
+    // 5. Send response to client
+    res.status(200).json({
+      message: 'Email verified successfully! Welcome email has been sent.',
+    });
   } catch (error: any) {
     console.log('Error in the Verify Email controller', error.message);
     res.status(500).json({ message: 'Internal server error' });
