@@ -14,6 +14,7 @@ export interface User {
   registerType: string;
   registrationDate: Date;
   phoneNumber: number;
+  isActive: boolean;
   cart?: Cart[];
   notifications?: Notification[];
   wishlist?: WishList[];
@@ -44,7 +45,4 @@ export interface ShippingAddress {
   user: User;
 }
 
-
-export interface Review {
-  
-}
+export interface Review {}
