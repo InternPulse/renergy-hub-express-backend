@@ -1,6 +1,5 @@
-import { CreateOrderDto, validateCreateOrder } from "../dto/orders/create-order.dto";
-import OrderRepository from "../repository/order.repository";
-import { OrderType } from "../types/enums";
+import { CreateOrderDto, validateCreateOrder } from "./order.dto";
+import OrderRepository from "./order.repository";
 
 export default class OrderManagementService {
 
@@ -18,7 +17,7 @@ export default class OrderManagementService {
     }
 
 
-    async listOrders(orderType: OrderType) {
+    async listOrders() {
         return await this.orderRepository.findAll();
     }
 }

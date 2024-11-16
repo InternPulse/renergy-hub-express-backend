@@ -1,16 +1,14 @@
 import { Application } from "express";
-import { OrderRoute } from "./order.route";
 import { Route } from "./route";
-import { AuthRoute } from "./auth.route";
+import { OrderRoute } from "../order-management/order.route";
 
 const apiVersion = '/api/v1';
 
 const routes: Record<string, Route> = {
-    orders: new OrderRoute(),
-    auth: new AuthRoute()
+    orders: new OrderRoute()
 };
 
-export const initRoutes = (app: any) =>{
+export const initOrderRoutes = (app: any) =>{
     Object.entries(routes).forEach(([url, route]) => {
       app.use(`${apiVersion}/${url}`, route.initRoutes());
     });

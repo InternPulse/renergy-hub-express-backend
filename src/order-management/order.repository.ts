@@ -1,4 +1,4 @@
-import { CreateOrderDto } from "../dto/orders/create-order.dto";
+import { CreateOrderDto } from "./order.dto";
 import { Order } from "../types";
 import prisma from "../util/db";
 
