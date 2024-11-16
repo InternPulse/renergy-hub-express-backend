@@ -28,7 +28,7 @@ export const getOrderById = async (orderId: number) => {
 
 export const createOrder = async (data: any) => {
   const { userId, orderDate, paymentStatus, totalAmount, orderItems } = data;
-  return prisma.order.create({
+  const order = prisma.order.create({
     data: {
       userId,
       orderDate,
@@ -37,6 +37,8 @@ export const createOrder = async (data: any) => {
       orderItems: { create: orderItems },
     },
   });
+
+  return order;
 };
 
 export const updateOrder = async (orderId: number, data: any) => {
