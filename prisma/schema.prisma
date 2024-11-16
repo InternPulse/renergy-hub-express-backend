@@ -21,6 +21,8 @@ model User {
   confirmPassword            String?
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
+  resetToken                 String?
+  resetTokenExpiresAt        DateTime?
   cart                       Cart[]
   notifications              Notification[]
   orders                     Order[]

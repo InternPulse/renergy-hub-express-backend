@@ -2,7 +2,11 @@ import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
 import generateToken from '../util/generateToken';
 import { Prisma } from '@prisma/client';
-import { verificationEmail, welcomeEmail } from '../resend/email';
+import {
+  passwordResetEmail,
+  verificationEmail,
+  welcomeEmail,
+} from '../resend/email';
 import prisma from '../db/prisma';
 
 export const register = async (req: Request, res: Response) => {
@@ -146,41 +150,44 @@ export const verifyEmail = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    // check if email and password are provided
+
+    // Check if email and password are provided
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: 'Email and password are required' });
     }
-    //check if the user exists in the database
+
+    // Check if the user exists in the database
+    console.log('Attempting to find user with email:', email);
     const user = await prisma.user.findUnique({ where: { email } });
+    console.log('User found:', user);
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // check if password is correct
+    // Check if password is correct
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // generate token
+    // Generate token with expiration time (e.g., 1 hour)
     generateToken(user.id.toString(), res);
 
-    // return user data
+    // Return user data excluding sensitive information
+    const { password: _, ...userData } = user;
+
     res.status(200).json({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
+      message: 'Login successful',
+      user: userData,
     });
   } catch (error: any) {
-    console.log('Error in the Login controller', error.message);
+    console.error('Error in the Login controller', error.message);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 export const logout = async (req: Request, res: Response) => {
   try {
     res.cookie('jwt', '', { maxAge: 0 });
@@ -190,9 +197,32 @@ export const logout = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-export const forgotPassword = async (req: Request, res: Response) => {};
-export const resetPassword = async (req: Request, res: Response) => {};
+export const forgotPassword = async (req: Request, res: Response) => {
+  // Extract email from request body
+  const { email } = req.body;
+  try {
+    // Find the user by email
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    // Generate a reset token and expiration date
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit random number
+    const resetTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-function sendVerificationEmail(email: any, verificationToken: string) {
-  throw new Error('Function not implemented.');
-}
+    // Update the user with the reset token and expiration date
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetToken, resetTokenExpiresAt },
+    });
+
+    // Send a reset password email with the reset token link to the user email address (use the PasswordResetEmail function) and return a success response
+    passwordResetEmail(user.email, resetToken);
+    res.status(200).json({ message: 'Reset password email sent successfully' });
+  } catch (error: any) {
+    console.error('Error in forgot password controller', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+export const resetPassword = async (req: Request, res: Response) => {};
