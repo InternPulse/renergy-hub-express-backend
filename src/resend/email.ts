@@ -80,3 +80,26 @@ export const passwordResetEmail = async (to: string, resetToken: string) => {
     throw new Error(`Failed to send password reset email: ${error.message}`);
   }
 };
+
+// Function to send a password reset success email
+export const passwordResetSuccessEmail = async (to: string) => {
+  try {
+    const html = PASSWORD_RESET_SUCCESS_TEMPLATE;
+
+    const { data, error } = await resend.emails.send({
+      from: 'RenergyHub <admin@megagigsolution.com>', // Use verified domain or default Resend domain
+      to: [to],
+      subject: 'Your Password Has Been Reset',
+      html: html,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  } catch (error: any) {
+    console.error('Error sending password reset success email:', error);
+    throw new Error(
+      `Failed to send password reset success email: ${error.message}`
+    );
+  }
+};

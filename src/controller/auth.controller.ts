@@ -225,4 +225,41 @@ export const forgotPassword = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-export const resetPassword = async (req: Request, res: Response) => {};
+export const resetPassword = async (req: Request, res: Response) => {
+  // Extract the reset token and new password from the request param and  body
+  const { resetToken } = req.params;
+  const { newPassword } = req.body;
+  // Find the user by reset token and ensure the token is still valid
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken,
+        resetTokenExpiresAt: {
+          gte: new Date(),
+        },
+      },
+    });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: 'Invalid or expired reset token' });
+    }
+    // Hash the new password
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    // Update the user with the new password and clear the reset token and expiration date
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiresAt: null,
+      },
+    });
+    // Send a password reset success email to the user email address (use the PasswordResetSuccessEmail function) and return a success response
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error: any) {
+    console.error('Error in reset password controller', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
