@@ -1,5 +1,5 @@
-import { CreateOrderDto, validateCreateOrder } from "../dto/orders/create-order.dto";
-import OrderRepository from "../repository/order.repository";
+import { CreateOrderDto, validateCreateOrder } from "./order.dto";
+import OrderRepository from "./order.repository";
 
 export default class OrderManagementService {
 

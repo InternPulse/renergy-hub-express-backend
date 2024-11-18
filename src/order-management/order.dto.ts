@@ -1,9 +1,16 @@
 import Joi from "joi";
-import { OrderItem, OrderStatus, PaymentStatus } from "../../types";
-import { BaseCreateDto } from "../dto";
+import { OrderItem, OrderStatus, PaymentStatus } from "../types";
 
-export interface CreateOrderDto extends BaseCreateDto {
+export interface CreateOrderDto {
     orderItems?: OrderItem[];
+}
+
+export interface CreateOrderItemDto {
+    orderId: number;
+    productId: number;
+    quantity: number;
+    price: number;
+    cartId: number;
 }
 
 export function validateCreateOrder(order: CreateOrderDto)

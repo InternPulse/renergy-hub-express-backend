@@ -48,7 +48,7 @@ npm install
 
 6. Start the App:
 ```bash
-npm run start
+npm run dev
 ```
 
 The API should now be running locally at [http://localhost:5000/](http://localhost:5000/).
