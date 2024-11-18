@@ -26,8 +26,8 @@ export class ReviewService {
 
   //get all reviews
 
-  async getAllReviews(): Promise<Review[]> {
-    return this.reviewRepository.findAll();
+  async getAllReviews(productId: number): Promise<Review[]> {
+    return this.reviewRepository.findAll(productId);
   }
   // Update a review
   async updateReview(review: Review): Promise<Review> {

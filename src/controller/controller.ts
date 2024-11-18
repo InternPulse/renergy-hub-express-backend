@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { Order } from "../types";

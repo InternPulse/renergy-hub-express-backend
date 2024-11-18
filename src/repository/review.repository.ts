@@ -12,15 +12,17 @@ export class ReviewRepository {
     });
   }
 
-  // Find a review by ID
+  
   async findById(id: number): Promise<Review | null> {
     return prisma.review.findUnique({
       where: { id },
     });
   }
-  // Get all reviews
-  async findAll(): Promise<Review[]> {
-    return prisma.review.findMany();
+  
+  async findAll(productId: number): Promise<Review[]> {
+    return prisma.review.findMany({
+      where: { productId },
+    });
   }
   // Update a review
   async update(review: Review): Promise<Review> {
