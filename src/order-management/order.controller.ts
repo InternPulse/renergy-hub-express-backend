@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
 import { success } from '../util/response.ts';
-import { CreateOrderItemDto } from './order.dto.ts';
+import { CreateOrderDto, CreateOrderItemDto } from './order.dto.ts';
+import { OrderitemRepository } from './order.repository.ts';
+import { OrderItemService } from './order-item.service.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -67,28 +69,15 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 };
 
 
-export const createorderitem = async (request: Request, response: Response, next: NextFunction)=>{
+export const createorderitemhandler = async (req: Request, res: Response, next: NextFunction)=>{
     try 
     {
-    // const createOrderDto: CreateOrderItemDto = request.body;
+    
+    const createOrderItemdto : CreateOrderItemDto = req.body
+    const orderitemservice = new OrderItemService()
 
-    // const Orderitem = await prisma.orderItem.create({
-    //     data:{
-    //         orderId: createOrderDto.orderId,
-    //         productId : createOrderDto.productId,
-    //         quantity: createOrderDto.quantity,
-    //         price: createOrderDto.price,
-    //         cartId : createOrderDto.cartId
-
-    //     }
-    // })
-
-    // return response.status(200).json({
-    //     "message":"Successful",
-    //     "Status": 200,
-    //     Orderitem
-    // }) 
-        return success(response, 201, {}, "TODO");
+    const neworderitem = await orderitemservice.createOrderItem(createOrderItemdto)
+    return success(res,201,{neworderitem},"Order Item successfully created")
     } 
     catch (error) 
     {
@@ -102,28 +91,15 @@ export const createorderitem = async (request: Request, response: Response, next
 // @Desc Update Order Item by ID
 // @Route /api/v1/updateorderitems/:id
 // @Method PUT
-export const updateOrderItem = async (req: Request, res: Response, next: NextFunction) => {
+export const updateOrderItemhandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id } = req.params; // Get the orderItem ID from the URL
-      const { orderId, productId, quantity, price, cartId } = req.body; // Get updated data from the request body
-  
-      // Create DTO for the order item
-    //   const createOrderDto = new CreateOrderItemDto(orderId, productId, quantity, price, cartId);
-  
-    //   // Update the order item in the database using Prisma
-    //   const updatedOrderItem = await prisma.orderItem.update({
-    //     where: { id: Number(id) }, // Find the orderItem by ID
-    //     data: {
-    //       orderId: createOrderDto.orderId,
-    //       productId: createOrderDto.productId,
-    //       quantity: createOrderDto.quantity,
-    //       price: createOrderDto.price,
-    //       cartId: createOrderDto.cartId,
-    //     },
-    //   });
-  
-      return success(res, 201, {}, "TODO");
-      
+      const {id}= req.params
+      const updatedata: CreateOrderItemDto = req.body
+      const updateOrderitem = new OrderItemService()
+
+      const updated = await updateOrderitem.updateorderitems(Number(id),updatedata)
+      return success(res,201,{updated},"Orderitems updated Successfully ")
+
     } 
     catch (error) 
     {
@@ -135,27 +111,13 @@ export const updateOrderItem = async (req: Request, res: Response, next: NextFun
 
 export const getOrderItemById = async (req: Request, res: Response, next: NextFunction) => {
     try 
-    {
-        // const { id } = req.params; 
-        // const orderItem = await prisma.orderItem.findUnique({
-        //     where: {
-        //         id: Number(id),
-        //     },
-        // });
-
-        // if (!orderItem) {
-        //     return res.status(404).json({
-        //         message: 'Order item not found',
-        //         Status: 404,
-        //     });
-        // }
-
-        // return res.status(200).json({
-        //     message: 'Order item retrieved successfully',
-        //     Status: 200,
-        //     orderItem,
-        // });
-        return success(res, 201, {}, "TODO");
+    { 
+        const {id}= req.params
+        const getall = new OrderItemService()
+        const getallorderitembyid = await getall.getOrderItembyId(Number(id))
+        if(!getallorderitembyid)
+          return res.status(400).json({message:"Orderitem not found"})
+        return success(res, 201, {getallorderitembyid}, "Orderitems retrieved Successfully");
     } 
     catch (error) 
     {
