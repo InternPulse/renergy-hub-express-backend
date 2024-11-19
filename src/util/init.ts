@@ -13,5 +13,4 @@ export const initOrderRoutes = (app: any) =>{
       app.use(`${apiVersion}/${url}`, route.initRoutes());
     });
 
-
 }

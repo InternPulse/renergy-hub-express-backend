@@ -6,7 +6,7 @@ import {
   register,
   resetPassword,
   verifyEmail,
-} from '../controller/auth.controller';
+} from '../user-management/controller/auth.controller';
 const router = express.Router();
 
 router.post('/register', register);
