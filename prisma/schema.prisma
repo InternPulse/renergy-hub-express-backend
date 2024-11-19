@@ -1,171 +1,169 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql" 
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  firstName       String
-  lastName        String
-  username        String            
-  email           String            
-  password        String
-  userType        String
-  registerType    String
-  registrationDate DateTime
-  phoneNumber     String          // Changed from Int to String for compatibility with various phone number formats
-  cart           Cart[]
-  notifications  Notification[]
-  wishlist       WishList[]
-  reviews        Review[]
-  orders         Order[]
-  payments       Payment[]
-  addresses      ShippingAddress[]
-  products       Product[]
-  orderReturns   OrderReturn[]
+  id                         Int               @id @default(autoincrement())
+  firstName                  String
+  lastName                   String
+  username                   String            @unique
+  email                      String            @unique
+  password                   String
+  userType                   String?
+  registerType               String?
+  registrationDate           DateTime          @default(now())
+  phoneNumber                String
+  confirmPassword            String?
+  verificationToken          String?
+  verificationTokenExpiresAt DateTime?
+  resetToken                 String?
+  resetTokenExpiresAt        DateTime?
+  cart                       Cart[]
+  notifications              Notification[]
+  orders                     Order[]
+  orderReturns               OrderReturn[]
+  payments                   Payment[]
+  products                   Product[]
+  reviews                    Review[]
+  addresses                  ShippingAddress[]
+  wishlist                   WishList[]
 
-  @@unique([username, email])       // Combined unique constraint for username and email
+  @@unique([username, email])
 }
 
 model Notification {
-  id              Int      @id @default(autoincrement())
-  message         String
-  userId          Int
-  user            User     @relation(fields: [userId], references: [id])
+  id      Int    @id @default(autoincrement())
+  message String
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model WishList {
-  id              Int      @id @default(autoincrement())
-  productId       Int
-  userId          Int
-  user            User     @relation(fields: [userId], references: [id])
-  product         Product  @relation(fields: [productId], references: [id])
+  id        Int     @id @default(autoincrement())
+  productId Int
+  userId    Int
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Cart {
-  id              Int      @id @default(autoincrement())
-  productId       Int
-  userId          Int
-  price           Decimal
-  quantity        Int
-  user            User     @relation(fields: [userId], references: [id])
-  product         Product  @relation(fields: [productId], references: [id])
-  orderItems      OrderItem[]
+  id         Int         @id @default(autoincrement())
+  productId  Int
+  userId     Int
+  price      Decimal
+  quantity   Int
+  product    Product     @relation(fields: [productId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
 }
 
 model Review {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  productId       Int
-  rating          Int
-  comment         String
-  datePosted      DateTime
-  user            User     @relation(fields: [userId], references: [id])
-  product         Product  @relation(fields: [productId], references: [id])
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  productId  Int
+  rating     Int
+  comment    String
+  datePosted DateTime
+  product    Product  @relation(fields: [productId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model ShippingAddress {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  state           String
-  addressLine     String
-  zipCode         String
-  city            String
-  country         String
-  isDefault       Boolean  @default(false)
-  user            User     @relation(fields: [userId], references: [id])
+  id          Int     @id @default(autoincrement())
+  userId      Int
+  state       String
+  addressLine String
+  zipCode     String
+  city        String
+  country     String
+  isDefault   Boolean @default(false)
+  user        User    @relation(fields: [userId], references: [id])
 }
 
 model Payment {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  orderId         Int
-  status          String
-  amount          Decimal
-  createdAt       DateTime
-  method          String
-  user            User     @relation(fields: [userId], references: [id])
-  order           Order    @relation(fields: [orderId], references: [id])
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  orderId   Int
+  status    String
+  amount    Decimal
+  createdAt DateTime
+  method    String
+  order     Order    @relation(fields: [orderId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Order {
-  id              Int           @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   userId          Int
   orderDate       DateTime
   paymentStatus   PaymentStatus  @default(PENDING)
   orderStatus     OrderStatus   @default(PENDING)
   totalAmount     Decimal
-  user            User          @relation(fields: [userId], references: [id])
+  user            User              @relation(fields: [userId], references: [id])
   orderItems      OrderItem[]
+  orderReturns    OrderReturn[]
   payments        Payment[]
   shippingOptions ShippingOptions[]
-  orderReturns    OrderReturn[]
 }
 
 model OrderItem {
-  id              Int      @id @default(autoincrement())
-  orderId         Int
-  productId       Int
-  quantity        Int
-  price           Decimal
-  cartId          Int
-  order           Order    @relation(fields: [orderId], references: [id])
-  product         Product  @relation(fields: [productId], references: [id])
-  cart            Cart     @relation(fields: [cartId], references: [id])
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Decimal
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Product {
-  id              Int           @id @default(autoincrement())
-  categoryId      Int
-  userId          Int
-  name            String
-  description     String
-  price           Decimal
-  stock           Int
-  image           String
-  createdAt       DateTime
-  updatedAt       DateTime
-  category        Category      @relation(fields: [categoryId], references: [id])
-  user            User          @relation(fields: [userId], references: [id])
-  cart            Cart[]
-  wishlist        WishList[]
-  reviews         Review[]
-  orderItems      OrderItem[]
-  orderReturns    OrderReturn[]
-  productInfo     ProductInformation[]
+  id           Int                  @id @default(autoincrement())
+  categoryId   Int
+  userId       Int
+  name         String
+  description  String
+  price        Decimal
+  stock        Int
+  image        String
+  createdAt    DateTime
+  updatedAt    DateTime
+  cart         Cart[]
+  orderItems   OrderItem[]
+  orderReturns OrderReturn[]
+  category     Category             @relation(fields: [categoryId], references: [id])
+  user         User                 @relation(fields: [userId], references: [id])
+  productInfo  ProductInformation[]
+  reviews      Review[]
+  wishlist     WishList[]
 }
 
 model Category {
-  id              Int      @id @default(autoincrement())
-  categoryName    String
-  description     String
-  products        Product[]
+  id           Int       @id @default(autoincrement())
+  categoryName String
+  description  String
+  products     Product[]
 }
 
 model ProductInformation {
-  id              Int      @id @default(autoincrement())
-  name            String
-  value           String
-  productId       Int
-  product         Product  @relation(fields: [productId], references: [id])
+  id        Int     @id @default(autoincrement())
+  name      String
+  value     String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model ShippingOptions {
-  id              Int      @id @default(autoincrement())
-  amount          Decimal
-  orderId         Int
-  order           Order    @relation(fields: [orderId], references: [id])
+  id      Int     @id @default(autoincrement())
+  amount  Decimal
+  orderId Int
+  order   Order   @relation(fields: [orderId], references: [id])
 }
 
 model OrderReturn {
