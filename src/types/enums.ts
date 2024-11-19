@@ -22,3 +22,9 @@ export enum OrderType {
   CUSTOMER = "CUSTOMER",
   VENDOR = "VENDOR"
 }
+
+
+export enum PaymentMethod {
+  ONLINE = "ONLINE",
+  CASH = "CASH"
+}

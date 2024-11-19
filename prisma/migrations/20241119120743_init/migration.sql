@@ -4,6 +4,9 @@ CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
+-- CreateEnum
+CREATE TYPE "PaymentMethod" AS ENUM ('ONLINE', 'CASH');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -80,10 +83,10 @@ CREATE TABLE "Payment" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "orderId" INTEGER NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
     "amount" DECIMAL(65,30) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL,
-    "method" TEXT NOT NULL,
+    "method" "PaymentMethod" NOT NULL DEFAULT 'ONLINE',
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
