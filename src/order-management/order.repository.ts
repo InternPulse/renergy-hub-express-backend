@@ -59,5 +59,14 @@ export  class OrderitemRepository{
         return updatebyid
     }
 
+    async delete(id:number){
+        const deletebyid = await prisma.orderItem.delete({
+            where:{
+                id:id
+            }
+        })
+        return deletebyid
+    }
+
     
 }
