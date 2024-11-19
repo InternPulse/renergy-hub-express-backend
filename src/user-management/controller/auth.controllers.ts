@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import prisma from "../util/db";
-import { validateUserDetails } from "../util/validateUserDetails";
-import { checkPasswordMatch } from "../util/checkPasswordMatch";
+import prisma from "../../util/db";
+import { validateUserDetails } from "../../util/validateUserDetails";
+import { checkPasswordMatch } from "../../util/checkPasswordMatch";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {

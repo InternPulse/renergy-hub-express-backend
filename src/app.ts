@@ -4,10 +4,7 @@ import { errorHandler } from "./util";
 // import authRoutes from './routes/auth.route';
 import { initOrderRoutes } from './util/init';
 import authRoutes from "./util/auth.routes";
-
-// app.use(express.json());
-
-// app.use('/api/v1/auth', authRoutes);
+import { PORT } from "./util/secrets";
 
 const apiVersion = '/api/v1';
 
