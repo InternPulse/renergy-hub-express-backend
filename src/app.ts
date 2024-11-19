@@ -1,21 +1,25 @@
 import { Express, Request, Response } from 'express';
-import authRoutes from './routes/auth.route';
-
+// import authRoutes from './routes/auth.route';
 import express from 'express';
-import { OrderRoute } from './routes/orderRoute';
-import { PORT } from './secrets';
-import { initRoutes } from './routes/init';
-// import { initRoutes } from './routes/init.ts';
+import { PORT } from './util/secrets';
+import { errorHandler } from './util';
+import { initOrderRoutes } from './util/init';
 
-const app: Express = express();
+// app.use(express.json());
 
-app.use(express.json());
-
-app.use('/api/v1/auth', authRoutes);
+// app.use('/api/v1/auth', authRoutes);
 
 const apiVersion = '/api/v1';
 
-initRoutes(app);
+const app: Express = express();
+// Apply middleware
+app.use(express.json());
+
+
+initOrderRoutes(app);
+
+//GLobal error Handler
+app.use(errorHandler);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
