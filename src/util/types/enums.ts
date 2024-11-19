@@ -17,3 +17,8 @@ export enum OrderStatus {
   DELIVERED = 'DELIVERED',
   CANCELLED = 'CANCELLED',
 }
+
+export enum OrderType {
+  CUSTOMER = "CUSTOMER",
+  VENDOR = "VENDOR"
+}

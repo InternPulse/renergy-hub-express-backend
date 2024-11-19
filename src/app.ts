@@ -1,11 +1,15 @@
 import { Express, Request, Response } from "express";
-import { Route } from "./routes/route";
 import express from "express";
-import { OrderRoute } from "./routes/orderRoute";
-import { PORT } from "./secrets";
-import { initRoutes } from "./routes/init";
 import { errorHandler } from "./util";
-import authRoutes from "./routes/auth.routes";
+// import authRoutes from './routes/auth.route';
+import { initOrderRoutes } from './util/init';
+import authRoutes from "./util/auth.routes";
+
+// app.use(express.json());
+
+// app.use('/api/v1/auth', authRoutes);
+
+const apiVersion = '/api/v1';
 
 const app: Express = express();
 // Apply middleware
@@ -14,7 +18,10 @@ app.use(express.json());
 //auth routes
 app.use("/api/v1/auth", authRoutes);
 
-initRoutes(app);
+initOrderRoutes(app);
+
+//GLobal error Handler
+app.use(errorHandler);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
@@ -23,6 +30,3 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-//GLobal error Handler
-app.use(errorHandler);

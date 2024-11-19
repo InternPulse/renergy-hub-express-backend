@@ -17,13 +17,13 @@ model User {
   id                         Int               @id @default(autoincrement())
   firstName                  String
   lastName                   String
-  username                   String
-  email                      String
+  username                   String            @unique
+  email                      String            @unique
   password                   String
-  userType                   String
-  registerType               String
-  registrationDate           DateTime
-  phoneNumber                String // Changed from Int to String for compatibility with various phone number formats
+  userType                   String?
+  registerType               String?
+  registrationDate           DateTime          @default(now())
+  phoneNumber                String
   confirmPassword            String?
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
@@ -31,15 +31,15 @@ model User {
   resetTokenExpiresAt        DateTime?
   cart                       Cart[]
   notifications              Notification[]
-  wishlist                   WishList[]
-  reviews                    Review[]
   orders                     Order[]
-  payments                   Payment[]
-  addresses                  ShippingAddress[]
-  products                   Product[]
   orderReturns               OrderReturn[]
+  payments                   Payment[]
+  products                   Product[]
+  reviews                    Review[]
+  addresses                  ShippingAddress[]
+  wishlist                   WishList[]
 
-  @@unique([username, email]) // Combined unique constraint for username and email
+  @@unique([username, email])
 }
 
 model Notification {
@@ -53,8 +53,8 @@ model WishList {
   id        Int     @id @default(autoincrement())
   productId Int
   userId    Int
-  user      User    @relation(fields: [userId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Cart {
@@ -63,8 +63,8 @@ model Cart {
   userId     Int
   price      Decimal
   quantity   Int
-  user       User        @relation(fields: [userId], references: [id])
   product    Product     @relation(fields: [productId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
 }
 
@@ -75,8 +75,8 @@ model Review {
   rating     Int
   comment    String
   datePosted DateTime
-  user       User     @relation(fields: [userId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model ShippingAddress {
@@ -99,8 +99,8 @@ model Payment {
   amount    Decimal
   createdAt DateTime
   method    String
-  user      User     @relation(fields: [userId], references: [id])
   order     Order    @relation(fields: [orderId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Order {
@@ -112,9 +112,9 @@ model Order {
   totalAmount     Decimal
   user            User              @relation(fields: [userId], references: [id])
   orderItems      OrderItem[]
+  orderReturns    OrderReturn[]
   payments        Payment[]
   shippingOptions ShippingOptions[]
-  orderReturns    OrderReturn[]
 }
 
 model OrderItem {
@@ -124,9 +124,9 @@ model OrderItem {
   quantity  Int
   price     Decimal
   cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
-  cart      Cart    @relation(fields: [cartId], references: [id])
 }
 
 model Product {
@@ -140,14 +140,14 @@ model Product {
   image        String
   createdAt    DateTime
   updatedAt    DateTime
-  category     Category             @relation(fields: [categoryId], references: [id])
-  user         User                 @relation(fields: [userId], references: [id])
   cart         Cart[]
-  wishlist     WishList[]
-  reviews      Review[]
   orderItems   OrderItem[]
   orderReturns OrderReturn[]
+  category     Category             @relation(fields: [categoryId], references: [id])
+  user         User                 @relation(fields: [userId], references: [id])
   productInfo  ProductInformation[]
+  reviews      Review[]
+  wishlist     WishList[]
 }
 
 model Category {
