@@ -1,13 +1,13 @@
 import bcryptjs from 'bcryptjs';
 import { Request, Response } from 'express';
-import generateToken from '../util/generateToken';
+import generateToken from '../../util/generateToken';
 import { Prisma } from '@prisma/client';
 import {
   passwordResetEmail,
   verificationEmail,
   welcomeEmail,
 } from '../resend/email';
-import prisma from '../db/prisma';
+import prisma from '../../util/db';
 
 export const register = async (req: Request, res: Response) => {
   try {
