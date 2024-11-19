@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrder, createorderitemhandler, getAllOrders, getOrderItemById, updateOrderItemhandler } from "./order.controller";
+import { createOrder, createorderitemhandler, deletedorderitemsbyid, getAllOrders, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
 import { deleteOrder, getOrderById, updateOrder } from "./order.service";
 
@@ -21,6 +21,7 @@ export class OrderRoute extends Route {
 		.post('/createorderitem',createorderitemhandler)
 		.get('/:id',getOrderItemById)
 		.put('/:id',updateOrderItemhandler)
+		.delete('/:id',deletedorderitemsbyid)
 
 
 		return this.router;
