@@ -20,11 +20,12 @@ model User {
   username                   String            @unique
   email                      String            @unique
   password                   String
-  userType                   String?
+  userType                   Role
   registerType               String?
   registrationDate           DateTime          @default(now())
   phoneNumber                String
   confirmPassword            String?
+  isVerified                 String?           @default("false")
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
   resetToken                 String?
@@ -194,4 +195,10 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum Role {
+  admin
+  customer
+  vendor
 }
