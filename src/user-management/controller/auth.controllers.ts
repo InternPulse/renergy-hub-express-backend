@@ -202,3 +202,59 @@ export const verifyEmail = async (req: Request, res: Response) => {
     console.error(error.message);
   }
 };
+
+export const resendEmail = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const resendUser = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+      select: {
+        email: true,
+        firstName: true,
+      },
+    });
+
+    //Create verification token
+    token = generateToken().toString();
+
+    //Verification time span
+    const time = new Date(Date.now() + 1 * 60 * 60 * 1000);
+
+    //Assign firstName to email variable
+    emailFirstName = resendUser?.firstName!;
+
+    console.log(time);
+    console.log(token);
+
+    const updateUser = await prisma.user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        verificationToken: token,
+        verificationTokenExpiresAt: time,
+      },
+    });
+
+    let result = await sendVerificationEmail(
+      resendUser?.email!,
+      resendUser?.firstName!,
+      token
+    ).catch((err: any) => {
+      console.error(err);
+    });
+
+    console.log(result);
+
+    res.status(200).json({
+      status: "success",
+      code: "200",
+      message: "Please check your email for verification.",
+    });
+  } catch (error: any) {
+    console.error(error.message);
+  }
+};
