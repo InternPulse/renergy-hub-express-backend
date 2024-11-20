@@ -3,9 +3,11 @@ import { PrismaClient, User } from "@prisma/client";
 import { validateUserDetails } from "../../util/validateUserDetails";
 import { checkPasswordMatch } from "../../util/checkPasswordMatch";
 import { generateToken } from "../../util/generateToken";
-import { hashSync } from "bcryptjs";
+import { compareSync, hashSync } from "bcryptjs";
 import sendVerificationEmail from "../../util/sendVerificationEmail";
 import * as EmailValidator from "email-validator";
+import { createJWT } from "../../util/createJWT";
+import { NODE_ENV } from "../../util/secrets";
 
 const prisma = new PrismaClient();
 
@@ -253,6 +255,79 @@ export const resendEmail = async (req: Request, res: Response) => {
       status: "success",
       code: "200",
       message: "Please check your email for verification.",
+    });
+  } catch (error: any) {
+    console.error(error.message);
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (user?.isVerified! === "true") {
+      //decrypt password
+      const result = compareSync(password, user?.password!);
+      console.log(result);
+
+      if (result) {
+        const accessToken = createJWT({
+          userID: `${user?.id}`,
+          role: `${user?.userType}`,
+        });
+
+        console.log(accessToken);
+
+        const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        const expiryDate = new Date(date + " UTC");
+
+        res.cookie("accessToken", accessToken, {
+          httpOnly: true,
+          expires: expiryDate,
+          sameSite: "lax",
+          secure: NODE_ENV === "production",
+        });
+
+        res
+          .status(201)
+          .json({ status: "success", code: "201", message: "user logged in" });
+
+        return;
+      }
+    }
+    //Create verification token
+    token = generateToken().toString();
+
+    //Verification time span
+    const time = new Date(Date.now() + 1 * 60 * 60 * 1000);
+
+    //Assign firstName to email variable
+    emailFirstName = user?.firstName!;
+
+    console.log(time);
+    console.log(token);
+
+    const updateUser = await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        verificationToken: token,
+        verificationTokenExpiresAt: time,
+      },
+    });
+
+    let result = await sendVerificationEmail(
+      user?.email!,
+      user?.firstName!,
+      token
+    ).catch((err: any) => {
+      console.error(err);
     });
   } catch (error: any) {
     console.error(error.message);
