@@ -145,3 +145,60 @@ export const registerUser = async (req: Request, res: Response) => {
     return;
   }
 };
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { id, verifyToken } = req.body;
+
+    const verifyUser = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+      select: {
+        verificationToken: true,
+        verificationTokenExpiresAt: true,
+      },
+    });
+
+    let dateNow = new Date(Date.now());
+    let date = new Date(dateNow + " UTC");
+    let tokenDate = new Date(verifyUser?.verificationTokenExpiresAt + " UTC");
+
+    //check for token expiration
+    if (tokenDate > date) {
+      if (verifyToken == verifyUser?.verificationToken) {
+        //update isVerified to "true"
+        await prisma.user.update({
+          where: {
+            id: Number(id),
+          },
+          data: {
+            isVerified: "true",
+          },
+        });
+
+        res.status(200).json({
+          status: "success",
+          code: "200",
+          message: "Email verification successful",
+        });
+        return;
+      }
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid input. Please check and try again.",
+      });
+      return;
+    }
+    res.status(400).json({
+      status: "error",
+      code: "400",
+      message:
+        "The token has expired. Please press the 'Resend' button below the page to resend a new token to your email. Thank you.",
+    });
+    return;
+  } catch (error: any) {
+    console.error(error.message);
+  }
+};
