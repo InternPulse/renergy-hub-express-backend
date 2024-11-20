@@ -25,6 +25,7 @@ model User {
   registrationDate           DateTime          @default(now())
   phoneNumber                String
   confirmPassword            String?
+  isVerified                 String?           @default("false")
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
   resetToken                 String?
