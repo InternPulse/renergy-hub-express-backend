@@ -12,7 +12,7 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "userType" TEXT,
+    "userType" TEXT NOT NULL,
     "registerType" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "phoneNumber" TEXT NOT NULL,
