@@ -30,7 +30,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
     //Check password match
     const check = checkPasswordMatch(req.body);
-    console.log(check);
 
     if (!check) {
       res.status(400).json({
@@ -91,11 +90,6 @@ export const registerUser = async (req: Request, res: Response) => {
     //Verification time span
     const time = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
-    console.log(time + " UTC");
-    console.log(new Date(time + " UTC"));
-
-    console.log(token);
-
     //Hash password and create new user
     const newUser = await prisma.user.create({
       data: {
@@ -137,8 +131,6 @@ export const registerUser = async (req: Request, res: Response) => {
     });
     return;
   } catch (error: any) {
-    console.log(error.message);
-
     res.status(500).json({
       status: "error",
       code: "500",
@@ -228,9 +220,6 @@ export const resendEmail = async (req: Request, res: Response) => {
     //Assign firstName to email variable
     emailFirstName = resendUser?.firstName!;
 
-    console.log(time);
-    console.log(token);
-
     const updateUser = await prisma.user.update({
       where: {
         id: Number(id),
@@ -248,8 +237,6 @@ export const resendEmail = async (req: Request, res: Response) => {
     ).catch((err: any) => {
       console.error(err);
     });
-
-    console.log(result);
 
     res.status(200).json({
       status: "success",
@@ -273,15 +260,12 @@ export const login = async (req: Request, res: Response) => {
     if (user?.isVerified! === "true") {
       //decrypt password
       const result = compareSync(password, user?.password!);
-      console.log(result);
 
       if (result) {
         const accessToken = createJWT({
           userID: `${user?.id}`,
           role: `${user?.userType}`,
         });
-
-        console.log(accessToken);
 
         const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
         const expiryDate = new Date(date + " UTC");
@@ -309,9 +293,6 @@ export const login = async (req: Request, res: Response) => {
     //Assign firstName to email variable
     emailFirstName = user?.firstName!;
 
-    console.log(time);
-    console.log(token);
-
     const updateUser = await prisma.user.update({
       where: {
         email: email,
@@ -332,4 +313,14 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error(error.message);
   }
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.cookie("accessToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res
+    .status(200)
+    .json({ status: "success", code: "200", message: "user logged out!" });
 };
