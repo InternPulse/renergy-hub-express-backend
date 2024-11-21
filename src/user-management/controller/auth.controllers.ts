@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { PrismaClient, User } from "@prisma/client";
 import { validateUserDetails } from "../../util/validateUserDetails";
 import { checkPasswordMatch } from "../../util/checkPasswordMatch";
@@ -8,6 +8,8 @@ import sendVerificationEmail from "../../util/sendVerificationEmail";
 import * as EmailValidator from "email-validator";
 import { createJWT } from "../../util/createJWT";
 import { NODE_ENV } from "../../util/secrets";
+import { environment } from '../../util/secrets'
+import { generateGoogleAuthJWT } from '../../util/googleAuthJWT';
 
 const prisma = new PrismaClient();
 
@@ -323,4 +325,47 @@ export const logout = (req: Request, res: Response) => {
   res
     .status(200)
     .json({ status: "success", code: "200", message: "user logged out!" });
+};
+
+// google login callback
+export const googleCallback = (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as { 
+    firstName: string, 
+    lastName: string, 
+    email: string, 
+    registerType: string,
+    googleId: string,
+    registrationDate: Date,
+    isVerified: string
+  };
+  if(!user){
+    return res.status(400).json({
+      success: false,
+      message: "Google login failed",
+    });
+  }
+  try{
+      const token = generateGoogleAuthJWT(user);
+      res.cookie("accessToken", token, {
+        httpOnly: true, 
+        maxAge: 3600000, 
+        secure: environment === "production",
+        sameSite: "lax"
+      });
+      return res.status(200).json({
+        success: true,
+        message: "google login successful",
+        data:{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          registerType: user.registerType,
+          googleId: user.googleId,
+          isVerified: user.isVerified
+        }
+      });
+  }
+  catch(err){
+    next()
+  }
 };

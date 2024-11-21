@@ -4,18 +4,22 @@ CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('admin', 'customer', 'vendor');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
+    "username" TEXT,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "userType" TEXT NOT NULL,
+    "password" TEXT,
+    "userType" "Role",
     "registerType" TEXT,
+    "googleId" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "phoneNumber" TEXT NOT NULL,
+    "phoneNumber" TEXT,
     "confirmPassword" TEXT,
     "isVerified" TEXT DEFAULT 'false',
     "verificationToken" TEXT,
