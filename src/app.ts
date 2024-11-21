@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+
 import express from "express";
 import { errorHandler } from "./util";
 // import authRoutes from './routes/auth.route';
