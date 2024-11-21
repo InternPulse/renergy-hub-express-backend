@@ -17,15 +17,16 @@ model User {
   id                         Int               @id @default(autoincrement())
   firstName                  String
   lastName                   String
-  username                   String            @unique
+  username                   String?           @unique
   email                      String            @unique
-  password                   String
-  userType                   Role
+  password                   String?
+  userType                   Role?
   registerType               String?
+  googleId                   String?           @unique
   registrationDate           DateTime          @default(now())
-  phoneNumber                String
+  phoneNumber                String?
   confirmPassword            String?
-  isVerified                 String?           @default("false")
+  isVerified                 String           @default("false")
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
   resetToken                 String?
