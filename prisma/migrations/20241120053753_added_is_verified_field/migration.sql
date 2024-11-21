@@ -12,20 +12,16 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-<<<<<<<< HEAD:prisma/migrations/20241116172734_init/migration.sql
     "userType" TEXT NOT NULL,
-    "registerType" TEXT NOT NULL,
-    "registrationDate" TIMESTAMP(3) NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-========
-    "userType" TEXT,
     "registerType" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "phoneNumber" TEXT NOT NULL,
     "confirmPassword" TEXT,
+    "isVerified" TEXT DEFAULT 'false',
     "verificationToken" TEXT,
     "verificationTokenExpiresAt" TIMESTAMP(3),
->>>>>>>> auth-structure:prisma/migrations/20241115195531_create_model/migration.sql
+    "resetToken" TEXT,
+    "resetTokenExpiresAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -177,7 +173,10 @@ CREATE TABLE "OrderReturn" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_username_email_key" ON "User"("username", "email");
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_email_key" ON "User"("username", "email");
@@ -237,10 +236,10 @@ ALTER TABLE "ProductInformation" ADD CONSTRAINT "ProductInformation_productId_fk
 ALTER TABLE "ShippingOptions" ADD CONSTRAINT "ShippingOptions_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -3,11 +3,11 @@ import { Express, Request, Response } from "express";
 import express from "express";
 import { errorHandler } from "./util";
 // import authRoutes from './routes/auth.route';
-import { initOrderRoutes } from './util/init';
+import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
 import { PORT } from "./util/secrets";
 
-const apiVersion = '/api/v1';
+const apiVersion = "/api/v1";
 
 const app: Express = express();
 // Apply middleware
