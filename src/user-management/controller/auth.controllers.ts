@@ -9,7 +9,7 @@ import * as EmailValidator from "email-validator";
 import { createJWT } from "../../util/createJWT";
 import { NODE_ENV } from "../../util/secrets";
 import { environment } from '../../util/secrets'
-import { generateGoogleAuthJWT } from '../../util/googleAuthJWT';
+import { generateAuthJWT } from '../../util/authJWT';
 
 const prisma = new PrismaClient();
 
@@ -334,7 +334,7 @@ export const googleCallback = (req: Request, res: Response, next: NextFunction) 
     lastName: string, 
     email: string, 
     registerType: string,
-    googleId: string,
+    socialId: string,
     registrationDate: Date,
     isVerified: string
   };
@@ -345,7 +345,7 @@ export const googleCallback = (req: Request, res: Response, next: NextFunction) 
     });
   }
   try{
-      const token = generateGoogleAuthJWT(user);
+      const token = generateAuthJWT(user);
       res.cookie("accessToken", token, {
         httpOnly: true, 
         maxAge: 3600000, 
@@ -360,7 +360,7 @@ export const googleCallback = (req: Request, res: Response, next: NextFunction) 
           lastName: user.lastName,
           email: user.email,
           registerType: user.registerType,
-          googleId: user.googleId,
+          socialId: user.socialId,
           isVerified: user.isVerified
         }
       });
@@ -369,3 +369,46 @@ export const googleCallback = (req: Request, res: Response, next: NextFunction) 
     next()
   }
 };
+
+//Facebook
+export const facebookCallback = (req: Request, res: Response, next: NextFunction)=>{
+  const user = req.user as { 
+    firstName: string, 
+    lastName: string, 
+    email: string, 
+    registerType: string,
+    socialId: string,
+    registrationDate: Date,
+    isVerified: string
+  };
+  if(!user){
+    return res.status(400).json({
+      success: false,
+      message: "Facebook login failed",
+    });
+  }
+  try{
+      const token = generateAuthJWT(user);
+      res.cookie("accessToken", token, {
+        httpOnly: true, 
+        maxAge: 3600000, 
+        secure: environment === "production",
+        sameSite: "lax"
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Facebook login successful",
+        data:{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          registerType: user.registerType,
+          socialId: user.socialId,
+          isVerified: user.isVerified
+        }
+      });
+  }
+  catch(err){
+    next();
+  }
+}

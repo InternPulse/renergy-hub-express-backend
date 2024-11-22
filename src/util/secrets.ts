@@ -21,3 +21,9 @@ export const  COOKIE_KEY = `${process.env.COOKIE_KEY}`;
 export const jwtSecrete = `${process.env.JWT_SECRETE}`;
 
 export const environment = process.env.NODE_ENV;
+
+export const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
+
+export const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+
+

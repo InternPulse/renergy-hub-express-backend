@@ -22,7 +22,7 @@ model User {
   password                   String?
   userType                   Role?
   registerType               String?
-  googleId                   String?           @unique
+  socialId                   String?           @unique
   registrationDate           DateTime          @default(now())
   phoneNumber                String?
   confirmPassword            String?
