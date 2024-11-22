@@ -29,9 +29,9 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Test social login on the browser
-// app.get("/social-login", (req: Request, res: Response) => {
-//   res.send("<a href = '/api/v1/auth/google'>Login with google</a>");
-// });
+app.get("/social-login", (req: Request, res: Response) => {
+  res.send("<a href = '/api/v1/auth/facebook'>Login with facebook</a>");
+});
 
 //Test protected routes 
 // app.get("/dashboard", verifyUserToken, (req, res)=>{
