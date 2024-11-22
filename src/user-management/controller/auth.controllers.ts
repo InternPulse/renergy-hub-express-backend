@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { validateUserDetails } from "../../util/validateUserDetails";
 import { checkPasswordMatch } from "../../util/checkPasswordMatch";
 import { generateToken } from "../../util/generateToken";
@@ -50,7 +50,7 @@ export const registerUser = async (req: Request, res: Response) => {
       registerType,
       userType,
       phoneNumber,
-    } = req.body;
+    }: User = req.body;
 
     const emailFormResult = EmailValidator.validate(email);
 
