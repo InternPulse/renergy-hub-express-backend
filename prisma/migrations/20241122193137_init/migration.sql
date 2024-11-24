@@ -17,11 +17,11 @@ CREATE TABLE "User" (
     "password" TEXT,
     "userType" "Role",
     "registerType" TEXT,
-    "googleId" TEXT,
+    "socialId" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "phoneNumber" TEXT,
     "confirmPassword" TEXT,
-    "isVerified" TEXT DEFAULT 'false',
+    "isVerified" TEXT NOT NULL DEFAULT 'false',
     "verificationToken" TEXT,
     "verificationTokenExpiresAt" TIMESTAMP(3),
     "resetToken" TEXT,
@@ -181,6 +181,9 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_socialId_key" ON "User"("socialId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_email_key" ON "User"("username", "email");
