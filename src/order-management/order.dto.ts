@@ -2,6 +2,10 @@ import Joi from "joi";
 import { OrderItem, OrderStatus, PaymentStatus } from "../util/types";
 
 export interface CreateOrderDto {
+    userId?: number;
+    orderDate?: Date;
+    paymentStatus?: PaymentStatus;
+    totalAmount?: number;
     orderItems?: OrderItem[];
 }
 
@@ -11,6 +15,10 @@ export interface CreateOrderItemDto {
     quantity: number;
     price: number;
     cartId: number;
+}
+
+export interface CreateNewOrderDto {
+    userId: number;
 }
 
 export function validateCreateOrder(order: CreateOrderDto)

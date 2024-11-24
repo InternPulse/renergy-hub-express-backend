@@ -1,5 +1,5 @@
-import { PaymentStatus } from "../types";
 import { generatePaymentUrl } from "../util/payment.gateway";
+import { PaymentStatus } from "../util/types";
 import { CreatePaymentDto, PaymentDto } from "./payment.dto";
 import { PaymentRepository } from "./payment.repository";
 import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';

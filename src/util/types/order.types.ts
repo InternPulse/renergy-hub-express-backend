@@ -18,15 +18,15 @@ export interface Order {
 }
 
 export interface OrderItem {
-  id: number;
-  orderId: number;
+  id?: number;
+  orderId?: number;
   productId: number;
   quantity: number;
   price: number;
   cartId: number;
-  order: Order;
-  product: Product;
-  cart: Cart;
+  order?: Order;
+  product?: Product;
+  cart?: Cart;
 }
 
 export interface OrderReturn {

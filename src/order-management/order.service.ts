@@ -1,4 +1,13 @@
 import prisma from "../util/lib/client.ts";
+import { Cart } from "../util/types/cart.types.ts";
+import { PaymentStatus } from "../util/types/enums.ts";
+import { OrderItem } from "../util/types/order.types.ts";
+import CartRepository from "./cart.repository.ts";
+import { CreateNewOrderDto, CreateOrderDto } from "./order.dto.ts";
+import OrderRepository from "./order.repository.ts";
+
+const cartRepository = new CartRepository();
+const orderRepository = new OrderRepository();
 
 export const getAllOrders = async (query: any) => {
   return prisma.order.findMany({
@@ -26,17 +35,14 @@ export const getOrderById = async (orderId: number) => {
     throw new Error("Order Not found")
 };
 
-export const createOrder = async (data: any) => {
-  const { userId, orderDate, paymentStatus, totalAmount, orderItems } = data;
-  const order = prisma.order.create({
-    data: {
-      userId,
-      orderDate,
-      paymentStatus,
-      totalAmount,
-      orderItems: { create: orderItems },
-    },
-  });
+export const createOrder = async (data: CreateNewOrderDto) => {
+
+  const cart = await cartRepository.findByUserId(data.userId);
+
+  if(!cart)
+    throw new Error("No item in User Cart")
+
+  const order = orderRepository.create(orderBuilder(data.userId, cart) )
 
   return order;
 };
@@ -53,3 +59,34 @@ export const deleteOrder = async (orderId: number) => {
     where: { id: orderId },
   });
 };
+
+
+const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
+  
+  let orderItems:OrderItem[] = [];
+
+  let totalAmount = 0;
+
+
+
+  carts.forEach((cart: Cart) => {
+    totalAmount += (cart.price * cart.quantity);
+
+    orderItems.push({
+      productId: cart.productId,
+      quantity: cart.quantity,
+      price: cart.price,
+      cartId: cart.id
+    })
+  }) 
+  const orderDto: CreateOrderDto = {
+    orderDate: new Date(),
+    userId,
+    totalAmount,
+    paymentStatus: PaymentStatus.PENDING,
+    orderItems
+  };
+
+  return orderDto;
+
+}

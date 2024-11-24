@@ -3,12 +3,15 @@ import { Order } from "../util/types";
 import prisma from "../util/db";
 
 export default class OrderRepository {
-    async create(data: CreateOrderDto) {
-        const order = await prisma.order.create({
+    async create(createOrder: CreateOrderDto) {
+        const order = prisma.order.create({
             data: {
-                orderDate:  new Date(),
-                totalAmount: 1000
-            }
+              userId: createOrder.userId,
+              orderDate: createOrder.orderDate,
+              paymentStatus: createOrder.paymentStatus,
+              totalAmount: createOrder.totalAmount,
+              orderItems: { create: createOrder.orderItems },
+            },
           });
 
         return order
