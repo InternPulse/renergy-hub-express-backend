@@ -394,32 +394,37 @@ export const googleCallback = (
   };
   if (!user) {
     return res.status(400).json({
-      success: false,
+      status: "error",
+      code: "400",
       message: "Google login failed",
     });
   }
-  try {
-    const token = generateAuthJWT(user);
-    res.cookie("accessToken", token, {
-      httpOnly: true,
-      maxAge: 3600000,
-      secure: environment === "production",
-      sameSite: "lax",
-    });
-    return res.status(200).json({
-      success: true,
-      message: "google login successful",
-      data: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        registerType: user.registerType,
-        socialId: user.socialId,
-        isVerified: user.isVerified,
-      },
-    });
-  } catch (err) {
-    next();
+  try{
+      const token = generateAuthJWT(user);
+      const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+      const expiryDate = new Date(date + " UTC");
+      res.cookie("accessToken", token, {
+        httpOnly: true, 
+        expires: expiryDate, 
+        secure: environment === "production",
+        sameSite: "lax"
+      });
+      return res.status(200).json({
+        status: "success",
+        code: "200",
+        message: "google login successful",
+        data:{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          registerType: user.registerType,
+          socialId: user.socialId,
+          isVerified: user.isVerified
+        }
+      });
+  }
+  catch(err){
+    next()
   }
 };
 
@@ -440,31 +445,36 @@ export const facebookCallback = (
   };
   if (!user) {
     return res.status(400).json({
-      success: false,
+      status: "error",
+      code: "400",
       message: "Facebook login failed",
     });
   }
-  try {
+  try{
     const token = generateAuthJWT(user);
+    const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    const expiryDate = new Date(date + " UTC");
     res.cookie("accessToken", token, {
-      httpOnly: true,
-      maxAge: 3600000,
+      httpOnly: true, 
+      expires: expiryDate, 
       secure: environment === "production",
-      sameSite: "lax",
+      sameSite: "lax"
     });
-    return res.status(200).json({
-      success: true,
-      message: "Facebook login successful",
-      data: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        registerType: user.registerType,
-        socialId: user.socialId,
-        isVerified: user.isVerified,
-      },
-    });
-  } catch (err) {
+      return res.status(200).json({
+        status: "success",
+        code: "200",
+        message: "Facebook login successful",
+        data:{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          registerType: user.registerType,
+          socialId: user.socialId,
+          isVerified: user.isVerified
+        }
+      });
+  }
+  catch(err){
     next();
   }
 };

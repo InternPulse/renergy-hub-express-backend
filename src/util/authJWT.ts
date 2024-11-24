@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { jwtSecrete } from './secrets'
+import { JWT_SECRET, JWT_EXPIRES_IN } from "./secrets";
 
 export const generateAuthJWT = (user: any)=>{
-  const token = jwt.sign({ id: user.id }, jwtSecrete, { expiresIn: '1h' });
+  const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
   return token;
 }
