@@ -6,7 +6,7 @@ export const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
 
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 
-export const JWT_SECRET = process.env.JWT_SECRET;
+export const JWT_SECRET = `${process.env.JWT_SECRET}`;
 
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
 
@@ -17,8 +17,6 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRETE = process.env.GOOGLE_CLIENT_SECRETE;
 
 export const  COOKIE_KEY = `${process.env.COOKIE_KEY}`;
-
-export const jwtSecrete = `${process.env.JWT_SECRETE}`;
 
 export const environment = process.env.NODE_ENV;
 

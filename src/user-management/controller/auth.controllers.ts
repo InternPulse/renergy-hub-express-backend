@@ -340,20 +340,24 @@ export const googleCallback = (req: Request, res: Response, next: NextFunction) 
   };
   if(!user){
     return res.status(400).json({
-      success: false,
+      status: "error",
+      code: "400",
       message: "Google login failed",
     });
   }
   try{
       const token = generateAuthJWT(user);
+      const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+      const expiryDate = new Date(date + " UTC");
       res.cookie("accessToken", token, {
         httpOnly: true, 
-        maxAge: 3600000, 
+        expires: expiryDate, 
         secure: environment === "production",
         sameSite: "lax"
       });
       return res.status(200).json({
-        success: true,
+        status: "success",
+        code: "200",
         message: "google login successful",
         data:{
           firstName: user.firstName,
@@ -396,7 +400,8 @@ export const facebookCallback = (req: Request, res: Response, next: NextFunction
         sameSite: "lax"
       });
       return res.status(200).json({
-        success: true,
+        status: "success",
+        code: "200",
         message: "Facebook login successful",
         data:{
           firstName: user.firstName,
