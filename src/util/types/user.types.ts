@@ -1,7 +1,7 @@
-import { Cart } from './cart.types';
-import { Order, OrderReturn } from './order.types';
-import { Payment } from './payment.types';
-import { Product, WishList } from './product.types';
+import { Cart } from "./cart.types";
+import { Order, OrderReturn } from "./order.types";
+import { Payment } from "./payment.types";
+import { Product, WishList } from "./product.types";
 
 export interface User {
   id: number;
@@ -43,7 +43,6 @@ export interface ShippingAddress {
   isDefault: boolean;
   user: User;
 }
-
 
 export interface Review {
   

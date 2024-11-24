@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { OrderItem, OrderStatus, PaymentStatus } from "../types";
+import { OrderItem, OrderStatus, PaymentStatus } from "../util/types";
 
 export interface CreateOrderDto {
     orderItems?: OrderItem[];

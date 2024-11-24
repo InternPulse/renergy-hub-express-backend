@@ -1,5 +1,5 @@
 import { CreateOrderDto, CreateOrderItemDto } from "./order.dto";
-import { Order } from "../types";
+import { Order } from "../util/types";
 import prisma from "../util/db";
 
 export default class OrderRepository {
