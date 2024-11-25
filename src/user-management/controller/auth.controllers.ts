@@ -769,3 +769,73 @@ export const resetPassword = async (req: Request, res: Response) => {
     return;
   }
 };
+
+
+
+export const changePassword = async (req: Request, res: Response) => {
+  try {
+    const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    // Ensure all required fields are provided
+    if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
+      return res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "All fields are required: email, currentPassword, newPassword, confirmNewPassword.",
+      });
+    }
+
+    // Check if new password and confirm new password match
+    if (!checkNewPasswordMatch({ newPassword, confirmNewPassword })) {
+      return res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "New passwords do not match.",
+      });
+    }
+
+    // Fetch the user based on email
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        code: "404",
+        message: "User with this email does not exist.",
+      });
+    }
+
+    // Verify the current password
+    if (!compareSync(currentPassword, user.password)) {
+      return res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Current password is incorrect.",
+      });
+    }
+
+    // Hash the new password
+    const hashedPassword = hashSync(newPassword, 10);
+
+    // Update the password in the database
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      code: "200",
+      message: "Password changed successfully.",
+    });
+  } catch (error: any) {
+    console.error("Change Password Error:", error.message);
+    return res.status(500).json({
+      status: "error",
+      code: "500",
+      message: "Internal server error.",
+    });
+  }
+};
