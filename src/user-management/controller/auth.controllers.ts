@@ -776,7 +776,7 @@ export const changePassword = async (req: Request, res: Response) => {
   try {
     const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
 
-    // Ensure all required fields are provided
+    // Check if all fields are provided
     if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
       return res.status(400).json({
         status: "error",
@@ -785,8 +785,10 @@ export const changePassword = async (req: Request, res: Response) => {
       });
     }
 
-    // Check if new password and confirm new password match
-    if (!checkNewPasswordMatch({ newPassword, confirmNewPassword })) {
+    // Validate that the new password and confirm new password match
+    const passwordMatch = checkNewPasswordMatch({ newPassword, confirmNewPassword });
+
+    if (!passwordMatch) {
       return res.status(400).json({
         status: "error",
         code: "400",
@@ -794,7 +796,7 @@ export const changePassword = async (req: Request, res: Response) => {
       });
     }
 
-    // Fetch the user based on email
+    // Fetch the user by email
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -803,12 +805,14 @@ export const changePassword = async (req: Request, res: Response) => {
       return res.status(404).json({
         status: "error",
         code: "404",
-        message: "User with this email does not exist.",
+        message: "User not found.",
       });
     }
 
-    // Verify the current password
-    if (!compareSync(currentPassword, user.password)) {
+    // Check if the current password matches the stored password
+    const isPasswordValid = compareSync(currentPassword, user.password);
+
+    if (!isPasswordValid) {
       return res.status(400).json({
         status: "error",
         code: "400",
@@ -819,20 +823,20 @@ export const changePassword = async (req: Request, res: Response) => {
     // Hash the new password
     const hashedPassword = hashSync(newPassword, 10);
 
-    // Update the password in the database
+    // Update the user's password
     await prisma.user.update({
       where: { email },
       data: { password: hashedPassword },
     });
 
-    return res.status(200).json({
+    res.status(200).json({
       status: "success",
       code: "200",
       message: "Password changed successfully.",
     });
   } catch (error: any) {
-    console.error("Change Password Error:", error.message);
-    return res.status(500).json({
+    console.error("Change Password:", error.message);
+    res.status(500).json({
       status: "error",
       code: "500",
       message: "Internal server error.",
