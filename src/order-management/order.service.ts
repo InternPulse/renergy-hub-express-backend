@@ -1,6 +1,7 @@
 import prisma from "../util/lib/client.ts";
+import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
-import { PaymentStatus } from "../util/types/enums.ts";
+import { OrderStatus, PaymentStatus } from "../util/types/enums.ts";
 import { OrderItem } from "../util/types/order.types.ts";
 import CartRepository from "./cart.repository.ts";
 import { CreateNewOrderDto, CreateOrderDto } from "./order.dto.ts";
@@ -33,6 +34,8 @@ export const getOrderById = async (orderId: number) => {
 
   if(!order)
     throw new Error("Order Not found")
+
+  return order;
 };
 
 export const createOrderV2 = async (data: CreateNewOrderDto) => {
@@ -69,6 +72,17 @@ export const deleteOrder = async (orderId: number) => {
   });
 };
 
+export const performOrderOperation = async (orderId: number, orderStatus: OrderStatus) => {
+  const order = await orderRepository.findByOrderId(orderId);
+
+  if(!order)
+    throw new Error("order does not exist");
+
+  order.orderStatus = orderStatus;
+
+  return await orderRepository.update(order);
+};
+
 
 const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
   
@@ -79,7 +93,7 @@ const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
 
 
   carts.forEach((cart: Cart) => {
-    totalAmount += (cart.price * cart.quantity);
+    totalAmount += (cart.price.toNumber() * cart.quantity);
 
     orderItems.push({
       productId: cart.productId,
@@ -93,7 +107,8 @@ const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
     userId,
     totalAmount,
     paymentStatus: PaymentStatus.PENDING,
-    orderItems
+    orderItems,
+    orderNumber: GenerateOrderNumber()
   };
 
   return orderDto;

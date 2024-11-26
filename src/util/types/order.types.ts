@@ -2,6 +2,7 @@ import { User } from './user.types';
 import { Payment, ShippingOptions } from './payment.types';
 import { Product } from './product.types';
 import { Cart, OrderStatus, PaymentStatus } from '.';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export interface Order {
   id: number;
@@ -22,7 +23,7 @@ export interface OrderItem {
   orderId?: number;
   productId: number;
   quantity: number;
-  price: number;
+  price: Decimal;
   cartId: number;
   order?: Order;
   product?: Product;

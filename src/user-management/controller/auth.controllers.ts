@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { validateUserDetails } from "../../util/validateUserDetails";
 import { checkPasswordMatch } from "../../util/checkPasswordMatch";
 import { generateToken } from "../../util/generateToken";
@@ -13,6 +13,7 @@ import { generateAuthJWT } from "../../util/authJWT";
 import sendResetVerificationEmail from "../../util/sendResetVerificationEmail";
 import { checkNewPasswordMatch } from "../../util/checkNewPasswordMatch";
 import sendForgotPasswordEmail from "../../util/sendForgotPasswordEmail";
+import { User } from "../../util/types";
 
 const prisma = new PrismaClient();
 

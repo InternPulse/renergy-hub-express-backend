@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
 import { success } from '../util/response.ts';
-import { CreateOrderDto, CreateOrderItemDto } from './order.dto.ts';
+import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderitemRepository } from './order.repository.ts';
 import { OrderItemService } from './order-item.service.ts';
+import { GenerateOrderNumber } from '../util/payment.gateway.ts';
+import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     
@@ -35,7 +37,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
   try 
   {
-    const newOrder = await orderService.createOrder({ userId: req.user?.id, ...req.body });
+    const newOrder = await orderService.createOrder({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
     success(res, 201, newOrder, "Order created successfully");
   } 
   catch (error) 
@@ -48,7 +50,7 @@ export const createOrderV2 = async (req: Request, res: Response, next: NextFunct
 
   try 
   {
-    const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body });
+    const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
     success(res, 201, newOrder, "Order created successfully");
   } 
   catch (error) 
@@ -75,6 +77,28 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
   {
     await orderService.deleteOrder(parseInt(req.params.orderId));
     success(res, 201, {}, "Order deleted successfully");
+  } 
+  catch (error) 
+  {
+    next(error);
+  }
+
+};
+
+export const performOrderOperation = async (req: Request, res: Response, next: NextFunction) => {
+  try 
+  {
+    let orderStatus = OrderStatus.PENDING;
+    const orderOperation: OrderOperationDto = req.body;
+    switch(orderOperation.orderOperationEnum)
+    {
+      case OrderOperationEnum.IN_QUEUE:
+        orderStatus = OrderStatus.PROCESSING;
+      break;
+    }
+
+    await orderService.performOrderOperation(orderOperation.orderId, orderStatus);
+    success(res, 201, {}, "Order status updated successfully");
   } 
   catch (error) 
   {

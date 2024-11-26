@@ -109,6 +109,7 @@ model Payment {
 model Order {
   id              Int               @id @default(autoincrement())
   userId          Int
+  orderNumber     String
   orderDate       DateTime
   paymentStatus   PaymentStatus     @default(PENDING)
   orderStatus     OrderStatus       @default(PENDING)
@@ -205,7 +206,7 @@ enum PaymentMethod {
 }
 
 enum Role {
-  admin
-  customer
-  vendor
+  ADMIN
+  CUSTOMER
+  VENDOR
 }
