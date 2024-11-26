@@ -399,32 +399,31 @@ export const googleCallback = (
       message: "Google login failed",
     });
   }
-  try{
-      const token = generateAuthJWT(user);
-      const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-      const expiryDate = new Date(date + " UTC");
-      res.cookie("accessToken", token, {
-        httpOnly: true, 
-        expires: expiryDate, 
-        secure: environment === "production",
-        sameSite: "lax"
-      });
-      return res.status(200).json({
-        status: "success",
-        code: "200",
-        message: "google login successful",
-        data:{
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          registerType: user.registerType,
-          socialId: user.socialId,
-          isVerified: user.isVerified
-        }
-      });
-  }
-  catch(err){
-    next()
+  try {
+    const token = generateAuthJWT(user);
+    const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    const expiryDate = new Date(date + " UTC");
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      expires: expiryDate,
+      secure: environment === "production",
+      sameSite: "lax",
+    });
+    return res.status(200).json({
+      status: "success",
+      code: "200",
+      message: "google login successful",
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        registerType: user.registerType,
+        socialId: user.socialId,
+        isVerified: user.isVerified,
+      },
+    });
+  } catch (err) {
+    next();
   }
 };
 
@@ -450,31 +449,30 @@ export const facebookCallback = (
       message: "Facebook login failed",
     });
   }
-  try{
+  try {
     const token = generateAuthJWT(user);
     const date = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
     const expiryDate = new Date(date + " UTC");
     res.cookie("accessToken", token, {
-      httpOnly: true, 
-      expires: expiryDate, 
+      httpOnly: true,
+      expires: expiryDate,
       secure: environment === "production",
-      sameSite: "lax"
+      sameSite: "lax",
     });
-      return res.status(200).json({
-        status: "success",
-        code: "200",
-        message: "Facebook login successful",
-        data:{
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          registerType: user.registerType,
-          socialId: user.socialId,
-          isVerified: user.isVerified
-        }
-      });
-  }
-  catch(err){
+    return res.status(200).json({
+      status: "success",
+      code: "200",
+      message: "Facebook login successful",
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        registerType: user.registerType,
+        socialId: user.socialId,
+        isVerified: user.isVerified,
+      },
+    });
+  } catch (err) {
     next();
   }
 };
@@ -780,23 +778,26 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const changePassword = async (req: Request, res: Response) => {
   try {
-    const { email, currentPassword, newPassword, confirmNewPassword } = req.body;
+    const { email, currentPassword, newPassword, confirmNewPassword } =
+      req.body;
 
     // Check if all fields are provided
     if (!email || !currentPassword || !newPassword || !confirmNewPassword) {
       return res.status(400).json({
         status: "error",
         code: "400",
-        message: "All fields are required: email, currentPassword, newPassword, confirmNewPassword.",
+        message:
+          "All fields are required: email, currentPassword, newPassword, confirmNewPassword.",
       });
     }
 
     // Validate that the new password and confirm new password match
-    const passwordMatch = checkNewPasswordMatch({ newPassword, confirmNewPassword });
+    const passwordMatch = checkNewPasswordMatch({
+      newPassword,
+      confirmNewPassword,
+    });
 
     if (!passwordMatch) {
       return res.status(400).json({
@@ -820,7 +821,7 @@ export const changePassword = async (req: Request, res: Response) => {
     }
 
     // Check if the current password matches the stored password
-    const isPasswordValid = compareSync(currentPassword, user.password);
+    const isPasswordValid = compareSync(currentPassword, user.password!);
 
     if (!isPasswordValid) {
       return res.status(400).json({
