@@ -3,6 +3,7 @@ import { createOrder, createorderitemhandler, getAllOrders, getOrderItemById, up
 import { Route } from "../util/route";
 import { deleteOrder, getOrderById, updateOrder } from "./order.service";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
+import { verifyUserToken } from "../util/authorizeUser";
 
 
 export class OrderRoute extends Route {
@@ -11,8 +12,8 @@ export class OrderRoute extends Route {
 
 	initRoutes(): Router {
 		this.router
-		.post('/', createOrder)
-		.get('/', getAllOrders);
+		.post('/', verifyUserToken, createOrder)
+		.get('/', verifyUserToken, getAllOrders);
 
 		this.router
 		.get('/:orderId', getOrderById)
@@ -21,16 +22,16 @@ export class OrderRoute extends Route {
 
 		  // WishList routes
 		  this.router
-			.post('/wishlist', createWishList)
-			.get('/wishlist/:wishlistId', getWishListById)
-			.get('/user/:userId/wishlist', getAllWishListsForUser)
-			.put('/wishlist/:wishlistId', updateWishList)
-			.delete('/wishlist/:wishlistId', deleteWishList);
+			.post('/wishlist', verifyUserToken, createWishList)
+			.get('/wishlist/:wishlistId', verifyUserToken, getWishListById)
+			.get('/user/:userId/wishlist', verifyUserToken, getAllWishListsForUser)
+			.put('/wishlist/:wishlistId', verifyUserToken, updateWishList)
+			.delete('/wishlist/:wishlistId', verifyUserToken, deleteWishList);
 			
 		  this.router
-			.post('/createorderitem',createorderitemhandler)
-			.get('/:id',getOrderItemById)
-			.put('/:id',updateOrderItemhandler)
+			.post('/createorderitem', verifyUserToken, createorderitemhandler)
+			.get('/:id', verifyUserToken, getOrderItemById)
+			.put('/:id', verifyUserToken, updateOrderItemhandler)
 
 
 		return this.router;
