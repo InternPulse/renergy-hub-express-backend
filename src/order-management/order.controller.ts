@@ -35,7 +35,20 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
   try 
   {
-    const newOrder = await orderService.createOrder(req.body);
+    const newOrder = await orderService.createOrder({ userId: req.user?.id, ...req.body });
+    success(res, 201, newOrder, "Order created successfully");
+  } 
+  catch (error) 
+  {
+    next(error)
+  }
+};
+
+export const createOrderV2 = async (req: Request, res: Response, next: NextFunction) => {
+
+  try 
+  {
+    const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body });
     success(res, 201, newOrder, "Order created successfully");
   } 
   catch (error) 
@@ -47,6 +60,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try 
   {
+    
     const updatedOrder = await orderService.updateOrder(parseInt(req.params.orderId), req.body);
     success(res, 201, updateOrder, "Order updated successfully");
   } 

@@ -35,7 +35,7 @@ export const getOrderById = async (orderId: number) => {
     throw new Error("Order Not found")
 };
 
-export const createOrder = async (data: CreateNewOrderDto) => {
+export const createOrderV2 = async (data: CreateNewOrderDto) => {
 
   const cart = await cartRepository.findByUserId(data.userId);
 
@@ -43,6 +43,15 @@ export const createOrder = async (data: CreateNewOrderDto) => {
     throw new Error("No item in User Cart")
 
   const order = orderRepository.create(orderBuilder(data.userId, cart) )
+
+  return order;
+};
+
+export const createOrder = async (data: CreateOrderDto) => {
+
+
+
+  const order = orderRepository.create(data )
 
   return order;
 };

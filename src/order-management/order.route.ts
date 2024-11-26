@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createOrder, createorderitemhandler, getAllOrders, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
-import { deleteOrder, getOrderById, updateOrder } from "./order.service";
+import { createOrderV2, deleteOrder, getOrderById, updateOrder } from "./order.service";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
 import { verifyUserToken } from "../util/authorizeUser";
 
@@ -14,6 +14,9 @@ export class OrderRoute extends Route {
 		this.router
 		.post('/', verifyUserToken, createOrder)
 		.get('/', verifyUserToken, getAllOrders);
+
+		this.router
+		.post('/v2/createOrder', verifyUserToken, createOrderV2)
 
 		this.router
 		.get('/:orderId', getOrderById)
