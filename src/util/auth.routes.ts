@@ -13,6 +13,7 @@ import {
   resetPassword,
   forgotPassword,
   verifyForgotPassword,
+  changePassword,
 } from "../user-management/controller/auth.controllers";
 
 const router = Router();
@@ -45,5 +46,6 @@ router.get("/verify-password-reset", verifyPasswordReset);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-forgot-password", verifyForgotPassword);
 router.post("/reset-password", resetPassword);
+router.post("/change-password", changePassword);
 
 export default router;
