@@ -1,9 +1,10 @@
 import { generatePaymentUrl } from "../util/payment.gateway";
-import { Payment, PaymentStatus, User } from "../util/types";
+import { OrderStatus, Payment, PaymentStatus, User } from "../util/types";
 import { CreatePaymentDto, PaymentDto, validatePaymentDto, WebhookData } from "./payment.dto";
 import { PaymentRepository } from "./payment.repository";
 import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';
 import * as orderService from './../order-management/order.service'
+import { OrderOperationEnum } from "../util/types/enums";
 
 const paymentRepository = new PaymentRepository();
 
@@ -51,7 +52,13 @@ export const processWebhook = async (webhookData: WebhookData): Promise<Payment>
 
     payment.status = PaymentStatus.COMPLETED;
 
+    const orderId = payment.orderId;
+
+    const orderOperationEnum = OrderOperationEnum.IN_QUEUE;
+
     await paymentRepository.update(payment);
+
+    await orderService.performOrderOperation( { orderId, orderOperationEnum });
   
     return payment;
 };

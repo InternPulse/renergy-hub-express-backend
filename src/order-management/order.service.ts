@@ -1,10 +1,10 @@
 import prisma from "../util/lib/client.ts";
 import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
-import { OrderStatus, PaymentStatus } from "../util/types/enums.ts";
+import { OrderOperationEnum, OrderStatus, PaymentStatus } from "../util/types/enums.ts";
 import { OrderItem } from "../util/types/order.types.ts";
 import CartRepository from "./cart.repository.ts";
-import { CreateNewOrderDto, CreateOrderDto } from "./order.dto.ts";
+import { CreateNewOrderDto, CreateOrderDto, OrderOperationDto } from "./order.dto.ts";
 import OrderRepository from "./order.repository.ts";
 
 const cartRepository = new CartRepository();
@@ -72,11 +72,20 @@ export const deleteOrder = async (orderId: number) => {
   });
 };
 
-export const performOrderOperation = async (orderId: number, orderStatus: OrderStatus) => {
-  const order = await orderRepository.findByOrderId(orderId);
+export const performOrderOperation = async (orderOperation: OrderOperationDto) => {
+  
+  let orderStatus = OrderStatus.PENDING;
+  const order = await orderRepository.findByOrderId(orderOperation.orderId);
 
   if(!order)
     throw new Error("order does not exist");
+
+  switch(orderOperation.orderOperationEnum)
+  {
+      case OrderOperationEnum.IN_QUEUE:
+        orderStatus = OrderStatus.PROCESSING;
+      break;
+  }
 
   order.orderStatus = orderStatus;
 

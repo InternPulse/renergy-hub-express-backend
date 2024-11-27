@@ -88,16 +88,11 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 export const performOrderOperation = async (req: Request, res: Response, next: NextFunction) => {
   try 
   {
-    let orderStatus = OrderStatus.PENDING;
+    
     const orderOperation: OrderOperationDto = req.body;
-    switch(orderOperation.orderOperationEnum)
-    {
-      case OrderOperationEnum.IN_QUEUE:
-        orderStatus = OrderStatus.PROCESSING;
-      break;
-    }
+    
 
-    await orderService.performOrderOperation(orderOperation.orderId, orderStatus);
+    await orderService.performOrderOperation(orderOperation);
     success(res, 201, {}, "Order status updated successfully");
   } 
   catch (error) 
