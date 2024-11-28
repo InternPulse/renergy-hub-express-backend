@@ -1,4 +1,4 @@
-export enum UserType {
+export enum Role {
   ADMIN = 'ADMIN',
   CUSTOMER = 'CUSTOMER',
   VENDOR = 'VENDOR',
@@ -21,4 +21,14 @@ export enum OrderStatus {
 export enum OrderType {
   CUSTOMER = "CUSTOMER",
   VENDOR = "VENDOR"
+}
+
+
+export enum PaymentMethod {
+  ONLINE = "ONLINE",
+  CASH = "CASH"
+}
+
+export enum OrderOperationEnum {
+  IN_QUEUE = "IN_QUEUE"
 }

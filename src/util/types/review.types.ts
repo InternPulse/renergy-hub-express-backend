@@ -3,6 +3,6 @@ export interface Review {
   userId: number;
   productId: number;
   rating: number;
-  comment?: string;
+  comment: string;
   datePosted: Date;
 }

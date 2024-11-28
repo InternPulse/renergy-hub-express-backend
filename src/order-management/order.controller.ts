@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
 import { success } from '../util/response.ts';
-import { CreateOrderDto, CreateOrderItemDto } from './order.dto.ts';
-import { OrderitemRepository } from './order.repository.ts';
+import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderItemService } from './order-item.service.ts';
+import { GenerateOrderNumber } from '../util/payment.gateway.ts';
+import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send("Orders successfully gotten")
@@ -29,8 +30,22 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
-  try {
-    const newOrder = await orderService.createOrder(req.body);
+  try 
+  {
+    const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...req.body, orderNumber: GenerateOrderNumber() });
+    success(res, 201, newOrder, "Order created successfully");
+  } 
+  catch (error) 
+  {
+    next(error)
+  }
+};
+
+export const createOrderV2 = async (req: Request, res: Response, next: NextFunction) => {
+
+  try 
+  {
+    const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
     success(res, 201, newOrder, "Order created successfully");
   }
   catch (error) {
@@ -39,7 +54,9 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+  try 
+  {
+    
     const updatedOrder = await orderService.updateOrder(parseInt(req.params.orderId), req.body);
     success(res, 201, updateOrder, "Order updated successfully");
   }
@@ -54,6 +71,23 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
     success(res, 201, {}, "Order deleted successfully");
   }
   catch (error) {
+    next(error);
+  }
+
+};
+
+export const performOrderOperation = async (req: Request, res: Response, next: NextFunction) => {
+  try 
+  {
+    
+    const orderOperation: OrderOperationDto = req.body;
+    
+
+    await orderService.performOrderOperation(orderOperation);
+    success(res, 201, {}, "Order status updated successfully");
+  } 
+  catch (error) 
+  {
     next(error);
   }
 };
