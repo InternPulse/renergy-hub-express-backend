@@ -18,7 +18,7 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 export const GOOGLE_CLIENT_SECRETE = process.env.GOOGLE_CLIENT_SECRETE;
 
-export const  COOKIE_KEY = `${process.env.COOKIE_KEY}`;
+export const COOKIE_KEY = `${process.env.COOKIE_KEY}`;
 
 export const environment = process.env.NODE_ENV;
 

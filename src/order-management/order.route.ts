@@ -4,7 +4,7 @@ import { Route } from "../util/route";
 import { createOrderV2, deleteOrder, getOrderById, updateOrder } from "./order.service";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
 import { verifyUserToken } from "../util/authorizeUser";
-
+import { generateAuthJWT } from '../util/authJWT'
 
 export class OrderRoute extends Route {
 	readonly name: string = 'orders';
@@ -23,9 +23,9 @@ export class OrderRoute extends Route {
 
 
 		this.router
-		.get('/:orderId', getOrderById)
-		.put('/:orderId', updateOrder)
-		.delete('/:orderId', deleteOrder);
+			.get('/:orderId', generateAuthJWT, getOrderById)
+			.put('/:orderId', generateAuthJWT, updateOrder)
+			.delete('/:orderId', generateAuthJWT, deleteOrder);
 
 		  // WishList routes
 		  this.router

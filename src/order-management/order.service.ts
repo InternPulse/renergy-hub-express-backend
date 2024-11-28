@@ -34,7 +34,7 @@ export const getOrderById = async (orderId: number) => {
     },
   });
 
-  if(!order)
+  if (!order)
     throw new Error("Order Not found")
 
   return order;
