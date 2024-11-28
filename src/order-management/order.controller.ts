@@ -6,84 +6,72 @@ import { OrderitemRepository } from './order.repository.ts';
 import { OrderItemService } from './order-item.service.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-    
-  try 
-  {
+  res.status(200).send("Orders successfully gotten")
+  try {
     const orders = await orderService.getAllOrders(req.query);
     success(res, 201, orders, "Order returned successfully");
-  } 
-  catch (error) 
-  {
+  }
+  catch (error) {
     next(error);
   }
 };
 
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
-  
-try 
-  {
+
+  try {
     const order = await orderService.getOrderById(parseInt(req.params.orderId));
     success(res, 201, order, "Order returned successfully");
-  } 
-  catch (error) 
-  {
+  }
+  catch (error) {
     next(error)
   }
 };
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
-  try 
-  {
+  try {
     const newOrder = await orderService.createOrder(req.body);
     success(res, 201, newOrder, "Order created successfully");
-  } 
-  catch (error) 
-  {
+  }
+  catch (error) {
     next(error)
   }
 };
 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
-  try 
-  {
+  try {
     const updatedOrder = await orderService.updateOrder(parseInt(req.params.orderId), req.body);
     success(res, 201, updateOrder, "Order updated successfully");
-  } 
-  catch (error) 
-  {
+  }
+  catch (error) {
     next(error);
   }
 };
 
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
-  try 
-  {
+  try {
     await orderService.deleteOrder(parseInt(req.params.orderId));
     success(res, 201, {}, "Order deleted successfully");
-  } 
-  catch (error) 
-  {
+  }
+  catch (error) {
     next(error);
   }
 };
 
 
-export const createorderitemhandler = async (req: Request, res: Response, next: NextFunction)=>{
-    try 
-    {
-    
-    const createOrderItemdto : CreateOrderItemDto = req.body
+export const createorderitemhandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const createOrderItemdto: CreateOrderItemDto = req.body
     const orderitemservice = new OrderItemService()
 
     const neworderitem = await orderitemservice.createOrderItem(createOrderItemdto)
-    return success(res,201,{neworderitem},"Order Item successfully created")
-    } 
-    catch (error) 
-    {
-        next(error)
-    }
-   
+    return success(res, 201, { neworderitem }, "Order Item successfully created")
+  }
+  catch (error) {
+    next(error)
+  }
+
 
 }
 
@@ -92,35 +80,32 @@ export const createorderitemhandler = async (req: Request, res: Response, next: 
 // @Route /api/v1/updateorderitems/:id
 // @Method PUT
 export const updateOrderItemhandler = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const {id}= req.params
-      const updatedata: CreateOrderItemDto = req.body
-      const updateOrderitem = new OrderItemService()
+  try {
+    const { id } = req.params
+    const updatedata: CreateOrderItemDto = req.body
+    const updateOrderitem = new OrderItemService()
 
-      const updated = await updateOrderitem.updateorderitems(Number(id),updatedata)
-      return success(res,201,{updated},"Orderitems updated Successfully ")
+    const updated = await updateOrderitem.updateorderitems(Number(id), updatedata)
+    return success(res, 201, { updated }, "Orderitems updated Successfully ")
 
-    } 
-    catch (error) 
-    {
-      next(error)
-    }
-  };
+  }
+  catch (error) {
+    next(error)
+  }
+};
 
 
 
 export const getOrderItemById = async (req: Request, res: Response, next: NextFunction) => {
-    try 
-    { 
-        const {id}= req.params
-        const getall = new OrderItemService()
-        const getallorderitembyid = await getall.getOrderItembyId(Number(id))
-        if(!getallorderitembyid)
-          return res.status(400).json({message:"Orderitem not found"})
-        return success(res, 201, {getallorderitembyid}, "Orderitems retrieved Successfully");
-    } 
-    catch (error) 
-    {
-        next(error)
-    }
+  try {
+    const { id } = req.params
+    const getall = new OrderItemService()
+    const getallorderitembyid = await getall.getOrderItembyId(Number(id))
+    if (!getallorderitembyid)
+      return res.status(400).json({ message: "Orderitem not found" })
+    return success(res, 201, { getallorderitembyid }, "Orderitems retrieved Successfully");
+  }
+  catch (error) {
+    next(error)
+  }
 };
