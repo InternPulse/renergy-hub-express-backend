@@ -32,7 +32,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
   try 
   {
-    const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...req.body, orderNumber: GenerateOrderNumber() });
+    const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...<CreateOrderDto>req.body, orderNumber: GenerateOrderNumber() });
     success(res, 201, newOrder, "Order created successfully");
   } 
   catch (error) 
