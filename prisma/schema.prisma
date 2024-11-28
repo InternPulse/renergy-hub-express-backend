@@ -26,7 +26,7 @@ model User {
   registrationDate           DateTime          @default(now())
   phoneNumber                String?
   confirmPassword            String?
-  isVerified                 String           @default("false")
+  isVerified                 String            @default("false")
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
   resetToken                 String?
@@ -110,7 +110,7 @@ model Order {
   id              Int               @id @default(autoincrement())
   userId          Int
   orderNumber     String
-  orderDate       DateTime
+  orderDate       DateTime          @default(now())
   paymentStatus   PaymentStatus     @default(PENDING)
   orderStatus     OrderStatus       @default(PENDING)
   totalAmount     Decimal

@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
 import { success } from '../util/response.ts';
 import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
-import { OrderitemRepository } from './order.repository.ts';
 import { OrderItemService } from './order-item.service.ts';
 import { GenerateOrderNumber } from '../util/payment.gateway.ts';
 import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
@@ -37,7 +36,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
   try 
   {
-    const newOrder = await orderService.createOrder({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
+    const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...req.body, orderNumber: GenerateOrderNumber() });
     success(res, 201, newOrder, "Order created successfully");
   } 
   catch (error) 

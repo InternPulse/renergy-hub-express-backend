@@ -4,11 +4,13 @@ import { Cart } from "../util/types/cart.types.ts";
 import { OrderOperationEnum, OrderStatus, PaymentStatus } from "../util/types/enums.ts";
 import { OrderItem } from "../util/types/order.types.ts";
 import CartRepository from "./cart.repository.ts";
-import { CreateNewOrderDto, CreateOrderDto, OrderOperationDto } from "./order.dto.ts";
+import { CreateNewOrderDto, CreateOrderDto, OrderOperationDto, validateCreateOrder } from "./order.dto.ts";
 import OrderRepository from "./order.repository.ts";
+import UserRepository from "./user.repository.ts";
 
 const cartRepository = new CartRepository();
 const orderRepository = new OrderRepository();
+const userRepository = new UserRepository();
 
 export const getAllOrders = async (query: any) => {
   return prisma.order.findMany({
@@ -53,6 +55,12 @@ export const createOrderV2 = async (data: CreateNewOrderDto) => {
 export const createOrder = async (data: CreateOrderDto) => {
 
 
+  const { error } = validateCreateOrder(data);
+
+  if(error)
+    throw new Error(`Invalid Request: ${error}`);
+
+  //const user = await userRepository.findByUserId(data)
 
   const order = orderRepository.create(data )
 

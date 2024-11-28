@@ -15,6 +15,7 @@ export const verifyUserToken = async (req: Request, res: Response, next: NextFun
   try{
     const verifiedToken = jwt.verify(token, JWT_SECRET);
     req.user = verifiedToken;
+    console.log("User Data", req.user)
     next();
   }
   catch(error){

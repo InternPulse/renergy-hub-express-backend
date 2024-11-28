@@ -32,6 +32,10 @@ export function validateCreateOrder(order: CreateOrderDto)
   {
     const JoiSchema = Joi.object({
       
+        userId: Joi.number().required(),     
+        orderDate: Joi.date().allow(null).optional(),
+        orderNumber: Joi.string().allow('').optional(), 
+        totalAmount: Joi.number().required(),   
         orderItems: Joi.array().items({
             productId: Joi.number().required(),
             quantity: Joi.number().required(),
