@@ -60,9 +60,18 @@ export const createOrder = async (data: CreateOrderDto) => {
   if(error)
     throw new Error(`Invalid Request: ${error}`);
 
+  // create a variable for the sum and initialize it
+  let sum = 0;
+
+  // calculate sum using forEach() method
+  data.orderItems?.forEach( item => {
+    sum += (item.price.toNumber() * item.quantity);
+  })
+
+  data.totalAmount = sum;
   //const user = await userRepository.findByUserId(data)
 
-  const order = orderRepository.create(data )
+  const order = orderRepository.create(data)
 
   return order;
 };
