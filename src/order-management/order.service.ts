@@ -65,7 +65,7 @@ export const createOrder = async (data: CreateOrderDto) => {
 
   // calculate sum using forEach() method
   data.orderItems?.forEach( item => {
-    sum += (item.price.toNumber() * item.quantity);
+    sum += (item.price * item.quantity);
   })
 
   data.totalAmount = sum;
