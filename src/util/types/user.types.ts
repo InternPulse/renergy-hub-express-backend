@@ -1,7 +1,8 @@
-import { Cart } from './cart.types';
-import { Order, OrderReturn } from './order.types';
-import { Payment } from './payment.types';
-import { Product, WishList } from './product.types';
+import { Cart } from "./cart.types";
+import { Role } from "./enums";
+import { Order, OrderReturn } from "./order.types";
+import { Payment } from "./payment.types";
+import { Product, WishList } from "./product.types";
 
 export interface User {
   id: number;
@@ -10,10 +11,10 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  userType: string;
+  userType: Role | null | undefined;
   registerType: string;
   registrationDate: Date;
-  phoneNumber: number;
+  phoneNumber: string;
   cart?: Cart[];
   notifications?: Notification[];
   wishlist?: WishList[];
@@ -43,7 +44,6 @@ export interface ShippingAddress {
   isDefault: boolean;
   user: User;
 }
-
 
 export interface Review {
   

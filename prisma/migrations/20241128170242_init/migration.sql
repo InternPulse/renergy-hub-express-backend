@@ -1,15 +1,34 @@
+-- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "PaymentMethod" AS ENUM ('ONLINE', 'CASH');
+
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'CUSTOMER', 'VENDOR');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
+    "username" TEXT,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "userType" TEXT NOT NULL,
-    "registerType" TEXT NOT NULL,
-    "registrationDate" TIMESTAMP(3) NOT NULL,
-    "phoneNumber" INTEGER NOT NULL,
+    "password" TEXT,
+    "userType" "Role",
+    "registerType" TEXT,
+    "socialId" TEXT,
+    "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "phoneNumber" TEXT,
+    "confirmPassword" TEXT,
+    "isVerified" TEXT NOT NULL DEFAULT 'false',
+    "verificationToken" TEXT,
+    "verificationTokenExpiresAt" TIMESTAMP(3),
+    "resetToken" TEXT,
+    "resetTokenExpiresAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -74,10 +93,11 @@ CREATE TABLE "Payment" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "orderId" INTEGER NOT NULL,
-    "status" TEXT NOT NULL,
+    "paymentId" TEXT NOT NULL,
+    "status" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
     "amount" DECIMAL(65,30) NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL,
-    "method" TEXT NOT NULL,
+    "paymentDate" TIMESTAMP(3) NOT NULL,
+    "method" "PaymentMethod" NOT NULL DEFAULT 'ONLINE',
 
     CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
@@ -86,8 +106,10 @@ CREATE TABLE "Payment" (
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "orderDate" TIMESTAMP(3) NOT NULL,
-    "paymentStatus" TEXT NOT NULL,
+    "orderNumber" TEXT NOT NULL,
+    "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "paymentStatus" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
+    "orderStatus" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "totalAmount" DECIMAL(65,30) NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
@@ -165,26 +187,32 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
--- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "User_socialId_key" ON "User"("socialId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_email_key" ON "User"("username", "email");
 
 -- AddForeignKey
-ALTER TABLE "WishList" ADD CONSTRAINT "WishList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WishList" ADD CONSTRAINT "WishList_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Cart" ADD CONSTRAINT "Cart_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "WishList" ADD CONSTRAINT "WishList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Cart" ADD CONSTRAINT "Cart_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Cart" ADD CONSTRAINT "Cart_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ShippingAddress" ADD CONSTRAINT "ShippingAddress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -199,13 +227,13 @@ ALTER TABLE "Payment" ADD CONSTRAINT "Payment_orderId_fkey" FOREIGN KEY ("orderI
 ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

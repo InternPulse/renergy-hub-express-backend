@@ -1,23 +1,42 @@
 import { CreateOrderDto, CreateOrderItemDto } from "./order.dto";
-import { Order } from "../types";
+import { Order } from "../util/types";
 import prisma from "../util/db";
+import { GenerateOrderNumber } from "../util/payment.gateway";
 
 export default class OrderRepository {
-    async create(data: CreateOrderDto) {
-        const order = await prisma.order.create({
+    async create(createOrder: CreateOrderDto) {
+        const order = prisma.order.create({
             data: {
-                orderDate:  new Date(),
-                totalAmount: 1000
-            }
+              userId: createOrder.userId,
+              orderNumber: GenerateOrderNumber(),
+              orderDate: createOrder.orderDate,
+              paymentStatus: createOrder.paymentStatus,
+              totalAmount: createOrder.totalAmount,
+              orderItems: { create: createOrder.orderItems },
+            },
           });
 
         return order
     }
 
+    async update(order: Order): Promise<Order> {
+        return prisma.order.update({
+          where: { id: order.id },
+          data: order,
+        });
+      }
+
     async findAll(): Promise<Order[]> {
         const orders = await prisma.order.findMany();
 
         return orders;
+    }
+
+    async findByOrderId(orderId: number): Promise<Order> {
+        const order = prisma.payment.findFirst({
+            where: { orderId }
+          });
+        return order;
     }
 }
 
