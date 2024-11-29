@@ -40,7 +40,6 @@ export class OrderRoute extends Route {
 		// 	.get('/:id', verifyUserToken, getOrderItemById)
 		// 	.put('/:id', verifyUserToken, updateOrderItemhandler)
 
-
 		return this.router;
 	}
 }
