@@ -7,6 +7,7 @@ export interface CreatePaymentDto {
     orderId?: number;
     amount?: number;
     method?: PaymentMethod;
+    paymentDate?: Date;
 }
 
 export interface PaymentDto {
@@ -89,9 +90,8 @@ export function validatePaymentDto(order: CreatePaymentDto)
     const JoiSchema = Joi.object({
       
         paymentId: Joi.string().allow('').optional(),  
-        userId: Joi.string().required(),     
-        orderId: Joi.string().required(),
-        amount: Joi.number().required(),   
+        userId:  Joi.string().allow('').optional(),   
+        orderId: Joi.number().required(), 
         method: Joi.string().valid(... Object.values(PaymentMethod)).required()           
         
     }).options({ abortEarly: false });
