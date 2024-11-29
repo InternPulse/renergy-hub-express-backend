@@ -12,8 +12,20 @@ const cartRepository = new CartRepository();
 const orderRepository = new OrderRepository();
 const userRepository = new UserRepository();
 
-export const getAllOrders = async (query: any) => {
+export const getAllOrders = async () => {
   return prisma.order.findMany({
+    include: {
+      orderItems: true,
+      payments: true,
+      shippingOptions: true,
+      orderReturns: true,
+    },
+  });
+};
+
+export const getAllOrdersByUser = async (userId: number) => {
+  return prisma.order.findMany({
+    where: { userId },
     include: {
       orderItems: true,
       payments: true,
