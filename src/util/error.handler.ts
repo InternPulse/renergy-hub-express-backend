@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { fail } from "./response";
 
 export default class CustomHttpError extends Error {
     httpStatusCode;
@@ -63,11 +64,13 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     // other custom behaviors...
    
     // return the standard error response
-    res.status(httpStatusCode).send({
-      error: {
-        message: message
-      },
-    });
+    // res.status(httpStatusCode).send({
+    //   error: {
+    //     message: message
+    //   },
+    // });
+
+    fail(res, httpStatusCode, message);
    
-    return next(err);
+    // return next(err);
   };
