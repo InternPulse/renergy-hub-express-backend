@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRoutes);
 
 //user routes
-app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/users", verifyUserToken, userRoutes);
 
 initOrderRoutes(app);
 
