@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { createOrder, getAllOrders, performOrderOperation } from "./order.controller";
 import { Route } from "../util/route";
 import { createOrderV2, deleteOrder, getOrderById, updateOrder } from "./order.service";
@@ -19,6 +20,10 @@ export class OrderRoute extends Route {
 		.post('/v2/createOrderV2', verifyUserToken, createOrderV2)
 
 		this.router
+		.post('/createorderitem',verifyUserToken,createorderitemhandler)
+		.get('/getorderitems/:id',verifyUserToken,getOrderItemById)
+		.put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)
+		.delete('/deleteorderitems/:id',verifyUserToken,deletedorderitemsbyid)
 		.post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
 
 
