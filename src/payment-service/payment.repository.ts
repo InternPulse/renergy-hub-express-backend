@@ -29,11 +29,11 @@ export class PaymentRepository {
       return payments;
   }
 
-    async findAll(paymentStatus: PaymentStatus): Promise<Payment[]> {
+    async findAll(status: PaymentStatus): Promise<Payment[]> {
       
       const payments = await prisma.payment.findMany({
         where: {
-          paymentStatus
+          status
         },
       });
 

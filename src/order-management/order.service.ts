@@ -12,8 +12,20 @@ const cartRepository = new CartRepository();
 const orderRepository = new OrderRepository();
 const userRepository = new UserRepository();
 
-export const getAllOrders = async (query: any) => {
+export const getAllOrders = async () => {
   return prisma.order.findMany({
+    include: {
+      orderItems: true,
+      payments: true,
+      shippingOptions: true,
+      orderReturns: true,
+    },
+  });
+};
+
+export const getAllOrdersByUser = async (userId: number) => {
+  return prisma.order.findMany({
+    where: { userId },
     include: {
       orderItems: true,
       payments: true,
@@ -65,7 +77,7 @@ export const createOrder = async (data: CreateOrderDto) => {
 
   // calculate sum using forEach() method
   data.orderItems?.forEach( item => {
-    sum += (item.price.toNumber() * item.quantity);
+    sum += (item.price * item.quantity);
   })
 
   data.totalAmount = sum;
@@ -96,6 +108,9 @@ export const performOrderOperation = async (orderOperation: OrderOperationDto) =
 
   if(!order)
     throw new Error("order does not exist");
+
+  if(order.paymentStatus == PaymentStatus.PENDING)
+    throw new Error("order have not been paid");
 
   switch(orderOperation.orderOperationEnum)
   {
