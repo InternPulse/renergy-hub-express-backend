@@ -37,7 +37,7 @@ export function validateCreateOrder(order: CreateOrderDto)
         orderItems: Joi.array().items({
             productId: Joi.number().required(),
             quantity: Joi.number().required(),
-            price: Joi.number().required()
+            price: Joi.number().allow(null,'').optional()
           }).min(1),               
         
     }).options({ abortEarly: false });
