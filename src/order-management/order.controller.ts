@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
-import { success } from '../util/response.ts';
+import { fail, success } from '../util/response.ts';
 import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderItemService } from './order-item.service.ts';
 import { GenerateOrderNumber } from '../util/payment.gateway.ts';
@@ -96,7 +96,8 @@ export const performOrderOperation = async (req: Request, res: Response, next: N
   } 
   catch (error) 
   {
-    next(error);
+    //next(error);
+    fail(res, 400, error.message)
   }
 };
 
