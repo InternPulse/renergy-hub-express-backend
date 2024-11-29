@@ -24,10 +24,8 @@ export interface OrderItem {
   productId: number;
   quantity: number;
   price: Decimal;
-  cartId: number;
   order?: Order;
   product?: Product;
-  cart?: Cart;
 }
 
 export interface OrderReturn {

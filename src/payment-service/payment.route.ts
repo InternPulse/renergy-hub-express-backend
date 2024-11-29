@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Route } from "../util/route";
 import { verifyUserToken } from "../util/authorizeUser";
-import { initializePayment, processWebhook } from "./payment.controller";
+import { getAllPayments, getAllPaymentsByUser, initializePayment, processWebhook } from "./payment.controller";
 
 
 export class PaymentRoute extends Route {
@@ -11,6 +11,12 @@ export class PaymentRoute extends Route {
 	initRoutes(): Router {
 		this.router
 		.post('/', verifyUserToken, initializePayment)
+
+		this.router
+		.get('/', verifyUserToken, getAllPayments)
+
+		this.router
+		.get('/', verifyUserToken, getAllPaymentsByUser)
 
 		this.router
 		.post('/pay-processor/callback', verifyUserToken, processWebhook)
