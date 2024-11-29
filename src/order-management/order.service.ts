@@ -1,3 +1,4 @@
+import CustomHttpError from "../util/error.handler.ts";
 import prisma from "../util/lib/client.ts";
 import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
@@ -107,10 +108,10 @@ export const performOrderOperation = async (orderOperation: OrderOperationDto) =
   const order = await orderRepository.findByOrderId(orderOperation.orderId);
 
   if(!order)
-    throw new Error("order does not exist");
+    throw new CustomHttpError(400, "order does not exist");
 
   if(order.paymentStatus == PaymentStatus.PENDING)
-    throw new Error("order have not been paid");
+    throw new CustomHttpError(400, "order have not been paid");
 
   switch(orderOperation.orderOperationEnum)
   {
