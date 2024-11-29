@@ -31,7 +31,7 @@ export default class CustomHttpError extends Error {
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) =>{
     // default HTTP status code and error message
     let httpStatusCode = 400;
-    let message = "Internal Server Error";
+    let message = "Error Occurred";
    
     // if the error is a custom defined error
     if (err instanceof CustomHttpError) {
