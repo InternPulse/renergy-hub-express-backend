@@ -8,7 +8,7 @@ export const generatePaymentUrl = async(email: string, reference: string | undef
 
     try 
     {
-        const response = await paystackClient.post('/transaction/initialize', { email, reference, amount});
+        const response = await paystackClient.post('/transaction/initialize', { email, reference, amount * 100});
         return <string>response.data.data.authorization_url;
     } 
     catch (error) 
