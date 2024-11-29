@@ -102,7 +102,7 @@ export const deleteOrder = async (orderId: number) => {
   });
 };
 
-export const performOrderOperation = async (orderOperation: OrderOperationDto) => {
+export const performOrderOperation = async (orderOperation: OrderOperationDto, isPaid = false) => {
   
   let orderStatus = OrderStatus.PENDING;
   const order = await orderRepository.findByOrderId(orderOperation.orderId);
