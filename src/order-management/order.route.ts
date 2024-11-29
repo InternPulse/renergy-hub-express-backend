@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, createOrderV2, deleteOrder, getOrderById, updateOrder } from "./order.controller";
+import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
 import { verifyUserToken } from "../util/authorizeUser";
@@ -20,6 +21,11 @@ export class OrderRoute extends Route {
 
 		this.router
 		.post('/performOrderOperation', verifyUserToken, performOrderOperation)
+		.post('/createorderitem',verifyUserToken,createorderitemhandler)
+		.get('/getorderitems/:id',verifyUserToken,getOrderItemById)
+		.put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)
+		.delete('/deleteorderitems/:id',verifyUserToken,deletedorderitemsbyid)
+		.post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
 
 
 		this.router
@@ -39,7 +45,6 @@ export class OrderRoute extends Route {
 		// 	.post('/createorderitem', verifyUserToken, createorderitemhandler)
 		// 	.get('/:id', verifyUserToken, getOrderItemById)
 		// 	.put('/:id', verifyUserToken, updateOrderItemhandler)
-
 
 		return this.router;
 	}

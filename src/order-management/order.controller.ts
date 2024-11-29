@@ -136,6 +136,25 @@ export const updateOrderItemhandler = async (req: Request, res: Response, next: 
   }
 };
 
+  export const deletedorderitemsbyid = async(req:Request , res:Response,next:NextFunction)=>{
+    try {
+      const{id}= req.params
+      const orderId = Number(id);
+      if (isNaN(orderId)) {
+          return res.status(400).json({ message: "Invalid ID parameter" });
+      }
+
+      const deleted = new OrderItemService()
+      const deletedorderitem = await deleted.deletedorderitems(orderId)
+      if(!deletedorderitem){
+          throw new Error('Order Items cannot be found or successfully deleted')
+      }
+      return success(res,201,deletedorderitem,"Order items deleted Successfully")
+    } catch (error) {
+      next(error)
+    }
+  }
+
 
 
 export const getOrderItemById = async (req: Request, res: Response, next: NextFunction) => {

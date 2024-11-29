@@ -7,6 +7,7 @@ export class ReviewRepository {
     return prisma.review.create({
       data: {
         ...review,
+        comment: review.comment ?? "",
         datePosted: new Date(),
       },
     });
