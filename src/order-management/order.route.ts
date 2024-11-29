@@ -32,7 +32,6 @@ export class OrderRoute extends Route {
 			.get('/:id',getOrderItemById)
 			.put('/:id',updateOrderItemhandler)
 
-
 		return this.router;
 	}
 }
