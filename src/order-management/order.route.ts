@@ -19,7 +19,7 @@ export class OrderRoute extends Route {
 		.post('/v2/createOrderV2', verifyUserToken, createOrderV2)
 
 		this.router
-		.post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
+		.post('/performOrderOperation', verifyUserToken, performOrderOperation)
 
 
 		this.router

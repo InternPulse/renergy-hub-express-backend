@@ -109,6 +109,9 @@ export const performOrderOperation = async (orderOperation: OrderOperationDto) =
   if(!order)
     throw new Error("order does not exist");
 
+  if(order.paymentStatus == PaymentStatus.PENDING)
+    throw new Error("order have not been paid");
+
   switch(orderOperation.orderOperationEnum)
   {
       case OrderOperationEnum.IN_QUEUE:

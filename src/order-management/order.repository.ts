@@ -32,9 +32,9 @@ export default class OrderRepository {
         return orders;
     }
 
-    async findByOrderId(orderId: number): Promise<Order> {
-        const order = prisma.payment.findFirst({
-            where: { orderId }
+    async findByOrderId(id: number): Promise<Order> {
+        const order = await prisma.order.findUnique({
+            where: { id }
           });
         return order;
     }

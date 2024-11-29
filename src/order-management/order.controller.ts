@@ -91,9 +91,8 @@ export const performOrderOperation = async (req: Request, res: Response, next: N
     
     const orderOperation: OrderOperationDto = req.body;
     
-
-    await orderService.performOrderOperation(orderOperation);
-    success(res, 201, {}, "Order status updated successfully");
+    const data = await orderService.performOrderOperation(orderOperation);
+    success(res, 201, data, "Order status updated successfully");
   } 
   catch (error) 
   {
