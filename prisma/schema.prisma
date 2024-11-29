@@ -26,7 +26,7 @@ model User {
   registrationDate           DateTime          @default(now())
   phoneNumber                String?
   confirmPassword            String?
-  isVerified                 String           @default("false")
+  isVerified                 String            @default("false")
   verificationToken          String?
   verificationTokenExpiresAt DateTime?
   resetToken                 String?
@@ -94,21 +94,23 @@ model ShippingAddress {
 }
 
 model Payment {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  orderId   Int
-  status    String
-  amount    Decimal
-  createdAt DateTime
-  method    String
-  order     Order    @relation(fields: [orderId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  orderId         Int
+  paymentId       String
+  status          PaymentStatus @default(PENDING)
+  amount          Decimal
+  paymentDate     DateTime
+  method          PaymentMethod @default(ONLINE)
+  user            User     @relation(fields: [userId], references: [id])
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
 model Order {
   id              Int               @id @default(autoincrement())
   userId          Int
-  orderDate       DateTime
+  orderNumber     String
+  orderDate       DateTime          @default(now())
   paymentStatus   PaymentStatus     @default(PENDING)
   orderStatus     OrderStatus       @default(PENDING)
   totalAmount     Decimal
@@ -198,8 +200,13 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum PaymentMethod {
+  ONLINE
+  CASH
+}
+
 enum Role {
-  admin
-  customer
-  vendor
+  ADMIN
+  CUSTOMER
+  VENDOR
 }

@@ -1,6 +1,8 @@
+
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "./secrets";
+
 
 export const verifyUserToken = async (
   req: Request,
@@ -16,6 +18,7 @@ export const verifyUserToken = async (
       },
     });
   }
+
   try {
     const verifiedToken = jwt.verify(token, JWT_SECRET);
     // req.user = verifiedToken;
