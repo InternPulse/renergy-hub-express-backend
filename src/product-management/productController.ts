@@ -60,9 +60,6 @@ export const addProductCategory = async (req: Request, res: Response)=>{
   }
 };
 
-
-
-
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
