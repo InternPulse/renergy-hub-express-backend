@@ -2,6 +2,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "./secrets";
+import CustomHttpError from "./error.handler";
 
 
 export const verifyUserToken = async (
@@ -60,6 +61,41 @@ export const authorizeUserRoles = (roles: string[]) => {
         message: "Forbiden: User is forbidden to access this resource"
       })
   }
+}
+};
+
+export const authorizeUserOrderRoles = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction)=>{
+    const user = req.user as {
+      userID: string;
+      role: string;
+    };
+
+    try 
+    {
+      if(!user)
+        throw new CustomHttpError(400, 'Unauthorized: No user data');
+
+      if(!roles.includes((user).role))
+        throw new CustomHttpError(403, "Forbiden: User is forbidden to access this resource");
+      
+      next();
+    } 
+    catch (err) 
+    {
+      next(err); // Forward the error to the error-handling middleware
+    }
+
+
+    // if(!user){
+    //   return res.status(401).json({
+    //     status: 'error',
+    //     code: '401',
+    //     message: 'Unauthorized: No user data',
+    //   });
+    // }
+
+    
 }
 };
 

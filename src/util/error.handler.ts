@@ -37,18 +37,16 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     if (err instanceof CustomHttpError) {
       httpStatusCode = err.httpStatusCode;
       message = err.message;
-    } else {
-      // hide the detailed error message in production
-      // for security reasons
-      if (process.env.NODE_ENV !== "production") {
-        // since in JavaScript you can also
-        // directly throw strings
-        if (typeof err === "string") {
-          message = err;
-        } else if (err instanceof Error) {
-          message = err.message;
-        }
+    } 
+    else 
+    {
+
+      if (typeof err === "string") {
+        message = err;
+      } else if (err instanceof Error) {
+        message = err.message;
       }
+      
     }
    
     let stackTrace = undefined;
