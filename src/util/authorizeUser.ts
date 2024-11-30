@@ -21,7 +21,9 @@ export const verifyUserToken = async (
 
   try {
     const verifiedToken = jwt.verify(token, JWT_SECRET);
+
     req.user = verifiedToken;
+
     next();
   } catch (err) {
     res.status(401).json({
