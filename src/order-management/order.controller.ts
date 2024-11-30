@@ -7,7 +7,8 @@ import { GenerateOrderNumber } from '../util/payment.gateway.ts';
 import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+  try 
+  {
     const orders = await orderService.getAllOrders();
     success(res, 201, orders, "Order returned successfully");
   }
@@ -17,7 +18,8 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const getAllOrdersByUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+  try 
+  {
     const orders = await orderService.getAllOrdersByUser(parseInt(req.user?.userID));
     success(res, 201, orders, "Order returned successfully");
   }

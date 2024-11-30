@@ -3,7 +3,7 @@ import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, c
 import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
-import { verifyUserToken } from "../util/authorizeUser";
+import { authorizeUserRoles, verifyUserToken } from "../util/authorizeUser";
 import { generateAuthJWT } from '../util/authJWT'
 
 export class OrderRoute extends Route {
@@ -13,7 +13,7 @@ export class OrderRoute extends Route {
 	initRoutes(): Router {
 		this.router
 		.post('/', verifyUserToken, createOrder)
-		.get('/', verifyUserToken, getAllOrders)
+		.get('/', verifyUserToken, authorizeUserRoles(['ADMIN']), getAllOrders)
 		.get('/users', verifyUserToken, getAllOrdersByUser);
 
 		this.router
