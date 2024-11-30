@@ -3,9 +3,14 @@ import { validateCategory, sendErrorResponse, validateProduct } from "../util/he
 import prisma from "../util/db";
 
 export const AddNewProduct  = async (req: Request, res: Response)=>{
+  const user = req.user as {
+    userId: string,
+    role: string
+  }
+  const userIdNumber = parseInt(user.userId);
   const requestBody = req.body
    validateProduct(requestBody);
-  const { categoryId, userId, name, description, price, stock, image } = requestBody;
+  const { categoryId, name, description, price, stock, image } = requestBody;
   try{
     const product = await prisma.product.create({
       data: {
@@ -21,7 +26,7 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
         },
         user: {
           connect: {
-            id: userId
+            id: userIdNumber
           }
         }
       }
