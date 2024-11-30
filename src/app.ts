@@ -8,6 +8,7 @@ import { verifyUserToken } from "./util/authorizeUser";
 import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
 import userRoutes from "./util/user.routes";
+import productRoutes from "./product-management/productRoute"
 import { PORT } from "./util/secrets";
 
 const apiVersion = "/api/v1";
@@ -23,12 +24,15 @@ app.use("/api/v1/auth", authRoutes);
 //user routes
 app.use("/api/v1/users", verifyUserToken, userRoutes);
 
+//Product routes
+app.use("/api/v1/products", productRoutes);
+
 initOrderRoutes(app);
 
 //GLobal error Handler
 app.use(errorHandler);
 
-app.get("/", verifyUserToken, (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 

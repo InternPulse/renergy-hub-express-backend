@@ -34,3 +34,32 @@ export const verifyUserToken = async (
     });
   }
 };
+
+
+export const authorizeUserRoles = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction)=>{
+    const user = req.user as {
+      userID: string;
+      role: string;
+    };
+
+    if(!user){
+      return res.status(401).json({
+        status: 'error',
+        code: '401',
+        message: 'Unauthorized: No user data',
+      });
+    }
+
+    if(roles.includes((user).role)){
+      next()
+    }else{
+      res.status(403).json({
+        status: "error",
+        code: "403",
+        message: "Forbiden: User is forbidden to access this resource"
+      })
+  }
+}
+};
+
