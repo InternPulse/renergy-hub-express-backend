@@ -9,6 +9,7 @@ import UserRepository from "../order-management/user.repository";
 import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma } from "@prisma/client";
 import OrderRepository from "../order-management/order.repository";
+import CustomHttpError from "../util/error.handler";
 
 const paymentRepository = new PaymentRepository();
 const userRepository = new UserRepository();
@@ -32,12 +33,15 @@ export const initializePayment = async (user: User, data: CreatePaymentDto): Pro
     const { error } = validatePaymentDto(data);
 
     if(error)
-        throw new Error (`Invalid Request: ${error}`)
+        throw new CustomHttpError (400, `Invalid Request: ${error}`)
 
     const order = await orderService.getOrderById(<number>data.orderId);
 
     if(!order)
-        throw new Error (`Invalid Order`)
+        throw new CustomHttpError (400, `Invalid Order`)
+
+    if(order.paymentStatus == PaymentStatus.COMPLETED)
+        throw new CustomHttpError (400, `Order has been paid`)
 
     data.amount = order.totalAmount.toNumber();
 
