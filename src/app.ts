@@ -28,7 +28,7 @@ initOrderRoutes(app);
 //GLobal error Handler
 app.use(errorHandler);
 
-app.get("/", verifyUserToken, (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
