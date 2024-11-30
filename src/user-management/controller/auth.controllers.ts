@@ -357,7 +357,7 @@ export const login = async (req: Request, res: Response) => {
       console.error(err);
     });
   } catch (error: any) {
-    console.error("Login user:", error.message);
+    console.error("Login user:", error);
     res.status(500).json({
       status: "error",
       code: "500",

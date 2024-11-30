@@ -5,8 +5,14 @@ import { PaymentRepository } from "./payment.repository";
 import { v4 as uuidv4, v6 as uuidv6 } from 'uuid';
 import * as orderService from './../order-management/order.service'
 import { OrderOperationEnum } from "../util/types/enums";
+import UserRepository from "../order-management/user.repository";
+import { Decimal } from "@prisma/client/runtime/library";
+import { Prisma } from "@prisma/client";
+import OrderRepository from "../order-management/order.repository";
 
 const paymentRepository = new PaymentRepository();
+const userRepository = new UserRepository();
+const orderRepository = new OrderRepository();
 
 export const getAllPayments = async (paymentStatus: PaymentStatus) => {
     return paymentRepository.findAll(paymentStatus)
@@ -33,12 +39,34 @@ export const initializePayment = async (user: User, data: CreatePaymentDto): Pro
     if(!order)
         throw new Error (`Invalid Order`)
 
-    const paymentId = uuidv4();
-    const payment = await paymentRepository.create({ paymentId, ...data, userId: user.id });
+    data.amount = order.totalAmount.toNumber();
 
-    const paymentUrl = await generatePaymentUrl(user.email, paymentId, <number>data.amount);
+    const paymentId = uuidv4();
+    const payment = await paymentRepository.create({ paymentId, ...data, userId: parseInt(user?.userID), paymentDate: new Date() });
+
+    const userObj = await userRepository.findByUserId(parseInt(user?.userID));
+
+    const paymentUrl = await generatePaymentUrl(<string>userObj?.email, paymentId, order.totalAmount.toNumber());
   
     return { paymentUrl };
+};
+
+
+export const findAll = async (paymentStatus: PaymentStatus): Promise<Payment[]> => {
+    
+    
+    const payments = await paymentRepository.findAll(paymentStatus);
+  
+    return payments;
+};
+
+
+export const findAllByuser = async (userId: number, paymentStatus: PaymentStatus): Promise<Payment[]> => {
+    
+    
+    const payments = await paymentRepository.findAllByUser(userId);
+  
+    return payments;
 };
 
 
@@ -57,6 +85,12 @@ export const processWebhook = async (webhookData: WebhookData): Promise<Payment>
     const orderOperationEnum = OrderOperationEnum.IN_QUEUE;
 
     await paymentRepository.update(payment);
+
+    const order = await orderRepository.findByOrderId(orderId);
+
+    order.paymentStatus = PaymentStatus.COMPLETED;
+
+    await orderRepository.update(order);
 
     await orderService.performOrderOperation( { orderId, orderOperationEnum });
   

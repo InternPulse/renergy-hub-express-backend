@@ -20,7 +20,7 @@ async function sendForgotPasswordEmail(
 ) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: '"Renergy Hub" <emmanuelarumona1990@gmail.com>', // sender address
+    from: '"Renergy Hub" <renergyhubng@gmail.com>', // sender address
     to: `${email}`, // list of receivers
     subject: "Renergy Hub Forgot Password Reset Verification", // Subject line
     text: "", // plain text body

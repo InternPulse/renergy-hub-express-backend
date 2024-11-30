@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as paymentService from './payment.service';
 import { success } from "../util";
-import { User } from "../util/types";
+import { PaymentStatus, User } from "../util/types";
 import { WebhookData } from "./payment.dto";
 
 export const initializePayment = async (req: Request, res: Response, next: NextFunction) => {
@@ -29,6 +29,29 @@ export const initializePayment = async (req: Request, res: Response, next: NextF
     } 
     catch (error) 
     {
+      next(error);
+    }
+  };
+
+  export const getAllPaymentsByUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const payments = await paymentService.getAllPaymentsByUser(parseInt(req.user?.userID));
+      success(res, 201, payments, "Payments returned successfully");
+    }
+    catch (error) {
+      next(error);
+    }
+  };
+
+
+  export const getAllPayments = async (req: Request, res: Response, next: NextFunction) => {
+    try 
+    {
+      const status = req.query.status as PaymentStatus;
+      const payments = await paymentService.getAllPayments(status);
+      success(res, 201, payments, "Payments returned successfully");
+    }
+    catch (error) {
       next(error);
     }
   };

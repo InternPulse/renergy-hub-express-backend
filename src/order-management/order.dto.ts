@@ -8,15 +8,13 @@ export interface CreateOrderDto {
     orderNumber?: string;
     paymentStatus?: PaymentStatus;
     totalAmount?: number;
-    orderItems?: OrderItem[];
+    orderItems?: CreateOrderItemDto[];
 }
 
 export interface CreateOrderItemDto {
-    orderId: number;
     productId: number;
     quantity: number;
     price: number;
-    cartId: number;
 }
 
 export interface CreateNewOrderDto {
@@ -35,11 +33,11 @@ export function validateCreateOrder(order: CreateOrderDto)
         userId: Joi.number().required(),     
         orderDate: Joi.date().allow(null).optional(),
         orderNumber: Joi.string().allow('').optional(), 
-        totalAmount: Joi.number().required(),   
+        totalAmount: Joi.number().allow('',null).optional(),   
         orderItems: Joi.array().items({
             productId: Joi.number().required(),
             quantity: Joi.number().required(),
-            price: Joi.number().required()
+            price: Joi.number().allow(null,'').optional()
           }).min(1),               
         
     }).options({ abortEarly: false });

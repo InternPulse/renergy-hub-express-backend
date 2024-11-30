@@ -1,15 +1,24 @@
 import { NextFunction, Request, Response } from 'express';
 import * as orderService from './order.service.ts';
-import { success } from '../util/response.ts';
+import { fail, success } from '../util/response.ts';
 import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderItemService } from './order-item.service.ts';
 import { GenerateOrderNumber } from '../util/payment.gateway.ts';
 import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).send("Orders successfully gotten")
   try {
-    const orders = await orderService.getAllOrders(req.query);
+    const orders = await orderService.getAllOrders();
+    success(res, 201, orders, "Order returned successfully");
+  }
+  catch (error) {
+    next(error);
+  }
+};
+
+export const getAllOrdersByUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const orders = await orderService.getAllOrdersByUser(parseInt(req.user?.userID));
     success(res, 201, orders, "Order returned successfully");
   }
   catch (error) {
@@ -29,7 +38,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-
+  console.log(req.user)
   try 
   {
     const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...<CreateOrderDto>req.body, orderNumber: GenerateOrderNumber() });
@@ -82,13 +91,13 @@ export const performOrderOperation = async (req: Request, res: Response, next: N
     
     const orderOperation: OrderOperationDto = req.body;
     
-
-    await orderService.performOrderOperation(orderOperation);
-    success(res, 201, {}, "Order status updated successfully");
+    const data = await orderService.performOrderOperation(orderOperation);
+    success(res, 201, data, "Order status updated successfully");
   } 
   catch (error) 
   {
-    next(error);
+    //next(error);
+    fail(res, 400, error.message)
   }
 };
 

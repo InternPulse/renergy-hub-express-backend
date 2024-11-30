@@ -1,3 +1,4 @@
+import CustomHttpError from "../util/error.handler.ts";
 import prisma from "../util/lib/client.ts";
 import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
@@ -12,8 +13,20 @@ const cartRepository = new CartRepository();
 const orderRepository = new OrderRepository();
 const userRepository = new UserRepository();
 
-export const getAllOrders = async (query: any) => {
+export const getAllOrders = async () => {
   return prisma.order.findMany({
+    include: {
+      orderItems: true,
+      payments: true,
+      shippingOptions: true,
+      orderReturns: true,
+    },
+  });
+};
+
+export const getAllOrdersByUser = async (userId: number) => {
+  return prisma.order.findMany({
+    where: { userId },
     include: {
       orderItems: true,
       payments: true,
@@ -65,7 +78,7 @@ export const createOrder = async (data: CreateOrderDto) => {
 
   // calculate sum using forEach() method
   data.orderItems?.forEach( item => {
-    sum += (item.price.toNumber() * item.quantity);
+    sum += (item.price * item.quantity);
   })
 
   data.totalAmount = sum;
@@ -89,13 +102,16 @@ export const deleteOrder = async (orderId: number) => {
   });
 };
 
-export const performOrderOperation = async (orderOperation: OrderOperationDto) => {
+export const performOrderOperation = async (orderOperation: OrderOperationDto, isPaid = false) => {
   
   let orderStatus = OrderStatus.PENDING;
   const order = await orderRepository.findByOrderId(orderOperation.orderId);
 
   if(!order)
-    throw new Error("order does not exist");
+    throw new CustomHttpError(400, "order does not exist");
+
+  if(order.paymentStatus == PaymentStatus.PENDING)
+    throw new CustomHttpError(400, "order have not been paid");
 
   switch(orderOperation.orderOperationEnum)
   {

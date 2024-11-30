@@ -1,5 +1,5 @@
 import { CreateOrderDto, CreateOrderItemDto } from "./order.dto";
-import { Order } from "../util/types";
+import { Order, PaymentStatus } from "../util/types";
 import prisma from "../util/db";
 import { GenerateOrderNumber } from "../util/payment.gateway";
 
@@ -9,8 +9,8 @@ export default class OrderRepository {
             data: {
               userId: createOrder.userId,
               orderNumber: GenerateOrderNumber(),
-              orderDate: createOrder.orderDate,
-              paymentStatus: createOrder.paymentStatus,
+              orderDate: new Date(),
+              paymentStatus: PaymentStatus.PENDING,
               totalAmount: createOrder.totalAmount,
               orderItems: { create: createOrder.orderItems },
             },
@@ -32,9 +32,9 @@ export default class OrderRepository {
         return orders;
     }
 
-    async findByOrderId(orderId: number): Promise<Order> {
-        const order = prisma.payment.findFirst({
-            where: { orderId }
+    async findByOrderId(id: number): Promise<Order> {
+        const order = await prisma.order.findUnique({
+            where: { id }
           });
         return order;
     }
