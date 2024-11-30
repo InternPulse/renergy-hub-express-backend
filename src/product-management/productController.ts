@@ -10,6 +10,7 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
   const userIdNumber = parseInt(user.userId);
   const requestBody = req.body
    validateProduct(requestBody);
+   
   const { categoryId, name, description, price, stock, image } = requestBody;
   try{
     const product = await prisma.product.create({
