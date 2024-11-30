@@ -9,12 +9,12 @@ import {
 } from "./productController";
 const router = Router();
 
-router.post("/", AddNewProduct);
-router.post("/category", addProductCategory);
+router.post("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), AddNewProduct);
+router.post("/category", verifyUserToken, authorizeUserRoles(["ADMIN"]), addProductCategory);
 
-router.get("/products", getAllProducts);
-router.get("/product/:id", getProduct);
-router.delete("/product/:id", deleteProduct);
+router.get("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), getAllProducts);
+router.get("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), getProduct);
+router.delete("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), deleteProduct);
 
 
 export default router;
