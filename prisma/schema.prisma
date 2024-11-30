@@ -139,8 +139,8 @@ model Product {
   price        Decimal
   stock        Int
   image        String
-  createdAt    DateTime
-  updatedAt    DateTime
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
   cart         Cart[]
   orderItems   OrderItem[]
   orderReturns OrderReturn[]
