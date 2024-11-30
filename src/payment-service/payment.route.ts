@@ -19,7 +19,7 @@ export class PaymentRoute extends Route {
 		.get('/', verifyUserToken, getAllPaymentsByUser)
 
 		this.router
-		.post('/pay-processor/callback', verifyUserToken, processWebhook)
+		.post('/pay-processor/callback', processWebhook)
 
 
 		return this.router;

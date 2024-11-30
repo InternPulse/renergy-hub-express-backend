@@ -8,9 +8,11 @@ import { OrderOperationEnum } from "../util/types/enums";
 import UserRepository from "../order-management/user.repository";
 import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma } from "@prisma/client";
+import OrderRepository from "../order-management/order.repository";
 
 const paymentRepository = new PaymentRepository();
 const userRepository = new UserRepository();
+const orderRepository = new OrderRepository();
 
 export const getAllPayments = async (paymentStatus: PaymentStatus) => {
     return paymentRepository.findAll(paymentStatus)
@@ -83,6 +85,12 @@ export const processWebhook = async (webhookData: WebhookData): Promise<Payment>
     const orderOperationEnum = OrderOperationEnum.IN_QUEUE;
 
     await paymentRepository.update(payment);
+
+    const order = await orderRepository.findByOrderId(orderId);
+
+    order.paymentStatus = PaymentStatus.COMPLETED;
+
+    await orderRepository.update(order);
 
     await orderService.performOrderOperation( { orderId, orderOperationEnum });
   
