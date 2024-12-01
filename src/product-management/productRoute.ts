@@ -3,17 +3,21 @@ import { verifyUserToken, authorizeUserRoles } from "../util/authorizeUser";
 import {
   AddNewProduct,
   addProductCategory,
+  getAllProductCategories,
   getAllProducts,
   getProduct,
-  deleteProduct
+  deleteProduct,
+  UpdateProduct
 } from "./productController";
 const router = Router();
 
 router.post("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), AddNewProduct);
 router.post("/category", verifyUserToken, authorizeUserRoles(["ADMIN"]), addProductCategory);
+router.get("/category", verifyUserToken, getAllProductCategories);
+router.put("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), UpdateProduct);
 
-router.get("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), getAllProducts);
-router.get("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), getProduct);
+router.get("/", getAllProducts);
+router.get("/:id", verifyUserToken, getProduct);
 router.delete("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), deleteProduct);
 
 
