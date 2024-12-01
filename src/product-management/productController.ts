@@ -4,14 +4,31 @@ import prisma from "../util/db";
 
 export const AddNewProduct  = async (req: Request, res: Response)=>{
   const user = req.user as {
-    userId: string,
+    userID: string,
     role: string
   }
-  const userIdNumber = parseInt(user.userId);
-  const requestBody = req.body
-   validateProduct(requestBody);
-   
-  const { categoryId, name, description, price, stock, image } = requestBody;
+  const { categoryId, name, description, price, stock, image } = req.body;
+  if(!categoryId || !name || !description || !price || !stock || !image){
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      message: "All fields are required"
+    })
+  }
+
+  const existingProductCategory = await prisma.category.findUnique({
+    where: {
+      id: parseInt(categoryId) // Ensure the ID is parsed as an integer
+    }
+  });
+  
+  if (!existingProductCategory) {
+    return res.status(404).json({
+      status: "error",
+      code: 404,
+      message: "Invalid product category",
+    });
+  }
   try{
     const product = await prisma.product.create({
       data: {
@@ -27,7 +44,7 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
         },
         user: {
           connect: {
-            id: userIdNumber
+            id: parseInt(user.userID)
           }
         }
       }
@@ -39,10 +56,86 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
     })
   }
   catch(err: any){
-    console.log(err.message)
-    sendErrorResponse(err, res);  
+    console.log(err.message) 
   }
 };
+
+export const UpdateProduct  = async (req: Request, res: Response)=>{
+  const user = req.user as {
+    userID: string,
+    role: string
+  }
+  const { id } = req.params;
+
+  const existingProduct = await prisma.product.findUnique({
+    where: {
+      id: parseInt(id) // Ensure the ID is parsed as an integer
+    }
+  });
+  
+  if (!existingProduct) {
+    return res.status(404).json({
+      status: "error",
+      code: 404,
+      message: "Product not found",
+    });
+  }
+ 
+  const { categoryId, name, description, price, stock, image } = req.body;
+  if(!categoryId || !name || !description || !price || !stock || !image){
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      message: "All fields are required"
+    })
+  }
+
+  const existingProductCategory = await prisma.category.findUnique({
+    where: {
+      id: parseInt(categoryId) // Ensure the ID is parsed as an integer
+    }
+  });
+  
+  if (!existingProductCategory) {
+    return res.status(404).json({
+      status: "error",
+      code: 404,
+      message: "Invalid product category",
+    });
+  }
+  try{
+    const product = await prisma.product.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        description,
+        price,
+        stock,
+        image,
+        category: {
+          connect: {
+            id: categoryId
+          }
+        },
+        user: {
+          connect: {
+            id: parseInt(user.userID)
+          }
+        }
+      }
+    });
+    return res.status(201).json({
+      status: "success",
+      code: 201,
+      data: product
+    })
+  }
+  catch(err: any){
+    console.log(err) 
+  }
+};
+
+
 
 export const addProductCategory = async (req: Request, res: Response)=>{
   try{
@@ -66,12 +159,31 @@ export const addProductCategory = async (req: Request, res: Response)=>{
   }
 };
 
+export const getAllProductCategories = async (req: Request, res: Response) => {
+  try {
+    const categories = await prisma.category.findMany();
+    if(!categories){
+      return res.status(404).json({
+        status: "error",
+        message: "No categories found"
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      code: 200,
+      data: categories
+    });
+  } catch (err: any) {
+    console.error(err.message);
+    sendErrorResponse(err, res);
+  }
+};
+
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
       include: {
-        category: true, // Include category details
-        user: true, // Include user details
+        category: true // Include category details
       },
     });
 
@@ -97,8 +209,7 @@ export const getProduct = async (req: Request, res: Response) => {
         id: parseInt(id, 10), // Ensure the ID is parsed as an integer
       },
       include: {
-        category: true, // Include related category details
-        user: true, // Include related user details
+        category: true // Include related category details
       },
     });
 
