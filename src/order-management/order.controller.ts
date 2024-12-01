@@ -3,8 +3,8 @@ import * as orderService from './order.service.ts';
 import { fail, success } from '../util/response.ts';
 import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderItemService } from './order-item.service.ts';
-import { GenerateOrderNumber } from '../util/payment.gateway.ts';
 import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
+import { GenerateOrderNumber } from '../util/helpers.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   try 
@@ -87,6 +87,22 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 
 };
 
+export const trackOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try 
+  {
+    
+    const orderNumber = req.params.orderNumber;
+    
+    const data = await orderService.getOrderByNumber(orderNumber);
+    success(res, 201, data, "Order returned successfully");
+  } 
+  catch (error) 
+  {
+    next(error);
+  }
+};
+
+
 export const performOrderOperation = async (req: Request, res: Response, next: NextFunction) => {
   try 
   {
@@ -98,8 +114,7 @@ export const performOrderOperation = async (req: Request, res: Response, next: N
   } 
   catch (error) 
   {
-    //next(error);
-    fail(res, 400, error.message)
+    next(error);
   }
 };
 

@@ -38,6 +38,13 @@ export default class OrderRepository {
           });
         return order;
     }
+
+    async findByOrderNumber(orderNumber: string): Promise<Order> {
+        const order = await prisma.order.findFirst({
+            where: { orderNumber }
+          });
+        return order;
+    }
 }
 
 export  class OrderitemRepository{
