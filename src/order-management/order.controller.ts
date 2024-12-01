@@ -40,7 +40,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.user)
+
   try 
   {
     const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...<CreateOrderDto>req.body, orderNumber: GenerateOrderNumber() });
