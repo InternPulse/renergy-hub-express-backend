@@ -305,3 +305,44 @@ export const deleteProductInformation = async (req: Request, res: Response) => {
   }
 };
 
+
+
+
+export const getProductInformationByProductId = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+
+  try {
+    // Validate productId
+    const id = parseInt(productId, 10);
+    if (isNaN(id) || id <= 0) {
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: "Invalid product ID.",
+      });
+    }
+
+    // Fetch product information
+    const productInformation = await prisma.productInformation.findMany({
+      where: { productId: id },
+      include: { product: true }, // Optionally include related product details
+    });
+
+    if (productInformation.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: "No product information found for the given product ID.",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      code: 200,
+      data: productInformation,
+    });
+  } catch (err: any) {
+    console.error(err.message);
+    sendErrorResponse(err, res);
+  }
+};
