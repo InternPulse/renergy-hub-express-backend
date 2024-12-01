@@ -43,7 +43,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     }
    
     // logg the error
-    //console.error(err);
+    console.error(err);
     // other custom behaviors...
    
     // return the standard error response

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, createOrderV2, deleteOrder, getOrderById, updateOrder, trackOrder } from "./order.controller";
+import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, deleteOrder, getOrderById, updateOrder, trackOrder } from "./order.controller";
 import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "../wishlist-management/wishlist.controller";
@@ -23,7 +23,7 @@ export class OrderRoute extends Route {
 		.get('/track/:orderNumber', verifyUserToken, trackOrder)
 
 		this.router
-		.post('/v2/createOrderV2', verifyUserToken, createOrderV2)
+		// .post('/v2/createOrderV2', verifyUserToken, createOrderV2)
 		
 		
 

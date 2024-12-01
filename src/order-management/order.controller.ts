@@ -3,7 +3,6 @@ import * as orderService from './order.service.ts';
 import { fail, success } from '../util/response.ts';
 import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
 import { OrderItemService } from './order-item.service.ts';
-import { OrderOperationEnum, OrderStatus } from '../util/types/enums.ts';
 import { GenerateOrderNumber } from '../util/helpers.ts';
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
@@ -52,17 +51,17 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const createOrderV2 = async (req: Request, res: Response, next: NextFunction) => {
+// export const createOrderV2 = async (req: Request, res: Response, next: NextFunction) => {
 
-  try 
-  {
-    const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
-    success(res, 201, newOrder, "Order created successfully");
-  }
-  catch (error) {
-    next(error)
-  }
-};
+//   try 
+//   {
+//     const newOrder = await orderService.createOrderV2({ userId: req.user?.id, ...req.body, orderNumber: GenerateOrderNumber() });
+//     success(res, 201, newOrder, "Order created successfully");
+//   }
+//   catch (error) {
+//     next(error)
+//   }
+// };
 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try 
