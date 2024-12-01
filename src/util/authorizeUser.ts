@@ -2,7 +2,8 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "./secrets";
-import CustomHttpError from "./error.handler";
+import ValidationError from "./validation.error";
+import CustomHttpError from "./custom.error";
 
 
 export const verifyUserToken = async (
@@ -64,7 +65,7 @@ export const authorizeUserRoles = (roles: string[]) => {
 }
 };
 
-export const authorizeUserOrderRoles = (roles: string[]) => {
+export const authorizeUserOrderPaymentRoles = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction)=>{
     const user = req.user as {
       userID: string;

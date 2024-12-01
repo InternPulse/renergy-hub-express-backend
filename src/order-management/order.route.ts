@@ -3,7 +3,7 @@ import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, c
 import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
 import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
-import { authorizeUserRoles, verifyUserToken } from "../util/authorizeUser";
+import { authorizeUserOrderPaymentRoles, authorizeUserRoles, verifyUserToken } from "../util/authorizeUser";
 import { generateAuthJWT } from '../util/authJWT'
 
 export class OrderRoute extends Route {
@@ -13,14 +13,18 @@ export class OrderRoute extends Route {
 	initRoutes(): Router {
 		this.router
 		.post('/', verifyUserToken, createOrder)
-		.get('/', verifyUserToken, authorizeUserRoles(['ADMIN']), getAllOrders)
+		.get('/', verifyUserToken, authorizeUserRoles(['ADMIN', 'VENDOR']), getAllOrders)
 		.get('/users', verifyUserToken, getAllOrdersByUser);
 
 		this.router
-		.post('/v2/createOrderV2', verifyUserToken, createOrderV2)
+		.post('/performOrderOperation', verifyUserToken, authorizeUserOrderPaymentRoles(['ADMIN']), performOrderOperation)
 
 		this.router
-		.post('/performOrderOperation', verifyUserToken, performOrderOperation)
+		.post('/v2/createOrderV2', verifyUserToken, createOrderV2)
+		
+		
+
+		//Order Items
 		.post('/createorderitem',verifyUserToken,createorderitemhandler)
 		.get('/getorderitems/:id',verifyUserToken,getOrderItemById)
 		.put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)

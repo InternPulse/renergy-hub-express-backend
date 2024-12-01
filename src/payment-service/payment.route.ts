@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Route } from "../util/route";
-import { verifyUserToken } from "../util/authorizeUser";
+import { authorizeUserOrderPaymentRoles, verifyUserToken } from "../util/authorizeUser";
 import { getAllPayments, getAllPaymentsByUser, initializePayment, processWebhook } from "./payment.controller";
 
 
@@ -13,10 +13,10 @@ export class PaymentRoute extends Route {
 		.post('/', verifyUserToken, initializePayment)
 
 		this.router
-		.get('/', verifyUserToken, getAllPayments)
+		.get('/', verifyUserToken, authorizeUserOrderPaymentRoles(['ADMIN']), getAllPayments)
 
 		this.router
-		.get('/', verifyUserToken, getAllPaymentsByUser)
+		.get('/user', verifyUserToken, getAllPaymentsByUser)
 
 		this.router
 		.post('/pay-processor/callback', processWebhook)
