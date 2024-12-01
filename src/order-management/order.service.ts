@@ -80,17 +80,37 @@ export const createOrder = async (data: CreateOrderDto) => {
   const { error } = validateCreateOrder(data);
 
   if(error)
-    throw new Error(`Invalid Request: ${error}`);
+    throw new CustomHttpError(400, `Invalid Request: ${error}`);
 
   // create a variable for the sum and initialize it
   let sum = 0;
 
-  // calculate sum using forEach() method
-  data.orderItems?.forEach( item => {
-    sum += (item.price * item.quantity);
-  })
+  let product = null;
 
-  data.totalAmount = sum;
+  // calculate sum using forEach() method
+  for (var item of data?.orderItems)
+  {
+    product = await prisma.product.findFirst({ where: {
+      id: item.productId
+    }})
+
+    if(!product)
+      throw new CustomHttpError(400, `Invalid Product`);
+
+    let subTotal = product.price.toNumber() * item.quantity;
+    
+    sum = sum + subTotal;
+  }
+    
+    
+
+    //console.log("Price", sum)
+    
+  
+
+  console.log("Price", sum)  
+
+  data.totalAmount = +sum;
   //const user = await userRepository.findByUserId(data)
 
   const order = orderRepository.create(data)
