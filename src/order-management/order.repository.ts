@@ -1,14 +1,13 @@
 import { CreateOrderDto, CreateOrderItemDto } from "./order.dto";
 import { Order, PaymentStatus } from "../util/types";
 import prisma from "../util/db";
-import { GenerateOrderNumber } from "../util/payment.gateway";
 
 export default class OrderRepository {
     async create(createOrder: CreateOrderDto) {
         const order = prisma.order.create({
             data: {
               userId: createOrder.userId,
-              orderNumber: GenerateOrderNumber(),
+              orderNumber: createOrder.orderNumber,
               orderDate: new Date(),
               paymentStatus: PaymentStatus.PENDING,
               totalAmount: createOrder.totalAmount,

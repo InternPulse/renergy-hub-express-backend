@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { OrderItem, OrderStatus, PaymentStatus } from "../util/types";
 import { OrderOperationEnum } from "../util/types/enums";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export interface CreateOrderDto {
     userId?: number;

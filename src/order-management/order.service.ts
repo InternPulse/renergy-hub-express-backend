@@ -1,6 +1,6 @@
 import CustomHttpError from "../util/custom.error.ts";
+import { GenerateOrderNumber } from "../util/helpers.ts";
 import prisma from "../util/lib/client.ts";
-import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
 import { OrderOperationEnum, OrderStatus, PaymentStatus } from "../util/types/enums.ts";
 import { OrderItem } from "../util/types/order.types.ts";
@@ -149,8 +149,7 @@ const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
     orderItems.push({
       productId: cart.productId,
       quantity: cart.quantity,
-      price: cart.price,
-      cartId: cart.id
+      price: cart.price
     })
   }) 
   const orderDto: CreateOrderDto = {
