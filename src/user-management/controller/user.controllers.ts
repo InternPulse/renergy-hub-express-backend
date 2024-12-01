@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({});
-    console.log(users);
+
     res.status(200).json({
       status: "success",
       code: "200",
@@ -50,8 +50,6 @@ export const getUserByID = async (req: Request, res: Response) => {
       });
       return;
     }
-
-    console.log(user);
 
     res.status(200).json({
       status: "success",
@@ -129,8 +127,6 @@ export const updateUserByID = async (req: Request, res: Response) => {
       });
       return;
     }
-
-    console.log(userExist);
 
     //validate input
     const { firstName, lastName, registerType, phoneNumber } = req.body;
