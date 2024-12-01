@@ -4,6 +4,7 @@ export const success = (res: Response, status: number, entity: any = [], msg = "
     .status(status || 200)
     .json({
         success: true,
+        statusCode: status,
         message: msg || "Successful",
         payload: entity || undefined,
     });
@@ -12,8 +13,8 @@ export const fail = (res: Response, status: number, msg = "") => res
     .status(status || 500)
     .json({
         success: false,
-        message: msg || "Failed",
-        payload: null,
+        statusCode: status,
+        message: msg || "Failed"
     });
 
 export const response = (res: Response, status: number, entity: any, msg = "") => res
