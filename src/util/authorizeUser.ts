@@ -65,7 +65,7 @@ export const authorizeUserRoles = (roles: string[]) => {
 }
 };
 
-export const authorizeUserOrderPaymentRoles = (roles: string[]) => {
+export const authorizeUserPermissions = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction)=>{
     const user = req.user as {
       userID: string;
