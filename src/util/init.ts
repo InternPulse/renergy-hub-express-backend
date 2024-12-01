@@ -3,13 +3,15 @@ import { Route } from "./route";
 import { ReviewRoute } from "./../user-management/review/reviewRoute";
 import { OrderRoute } from "../order-management/order.route";
 import { PaymentRoute } from "../payment-service/payment.route";
+import { WishListRoute } from "../wishlist-management/wishlist.route";
 
 const apiVersion = "/api/v1";
 
 const routes: Record<string, Route> = {
   orders: new OrderRoute(),
   reviews: new ReviewRoute(),
-  payments: new PaymentRoute()
+  payments: new PaymentRoute(),
+  wishlists: new WishListRoute()
 };
 
 export const initOrderRoutes = (app: any) => {

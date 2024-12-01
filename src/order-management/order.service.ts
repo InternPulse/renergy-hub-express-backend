@@ -1,6 +1,6 @@
 import CustomHttpError from "../util/custom.error.ts";
+import { GenerateOrderNumber } from "../util/helpers.ts";
 import prisma from "../util/lib/client.ts";
-import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
 import { OrderOperationEnum, OrderStatus, PaymentStatus } from "../util/types/enums.ts";
 import { OrderItem } from "../util/types/order.types.ts";
@@ -135,33 +135,32 @@ export const performOrderOperation = async (orderOperation: OrderOperationDto, i
 };
 
 
-const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
+// const orderBuilder = (userId: number, carts: Cart[]): CreateOrderDto => {
   
-  let orderItems:OrderItem[] = [];
+//   let orderItems:OrderItem[] = [];
 
-  let totalAmount = 0;
+//   let totalAmount = 0;
 
 
 
-  carts.forEach((cart: Cart) => {
-    totalAmount += (cart.price.toNumber() * cart.quantity);
+//   carts.forEach((cart: Cart) => {
+//     totalAmount += (cart.price.toNumber() * cart.quantity);
 
-    orderItems.push({
-      productId: cart.productId,
-      quantity: cart.quantity,
-      price: cart.price,
-      cartId: cart.id
-    })
-  }) 
-  const orderDto: CreateOrderDto = {
-    orderDate: new Date(),
-    userId,
-    totalAmount,
-    paymentStatus: PaymentStatus.PENDING,
-    orderItems,
-    orderNumber: GenerateOrderNumber()
-  };
+//     orderItems.push({
+//       productId: cart.productId,
+//       quantity: cart.quantity,
+//       price: cart.price
+//     })
+//   }) 
+//   const orderDto: CreateOrderDto = {
+//     orderDate: new Date(),
+//     userId,
+//     totalAmount,
+//     paymentStatus: PaymentStatus.PENDING,
+//     orderItems,
+//     orderNumber: GenerateOrderNumber()
+//   };
 
-  return orderDto;
+//   return orderDto;
 
-}
+// }

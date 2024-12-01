@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, createOrderV2, deleteOrder, getOrderById, updateOrder, trackOrder } from "./order.controller";
 import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
-import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
+import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "../wishlist-management/wishlist.controller";
 import { authorizeUserPermissions, authorizeUserRoles, verifyUserToken } from "../util/authorizeUser";
 import { generateAuthJWT } from '../util/authJWT'
 
@@ -40,18 +40,7 @@ export class OrderRoute extends Route {
 			.put('/view/:orderId', verifyUserToken, updateOrder)
 			.delete('/view/:orderId', verifyUserToken, deleteOrder);
 
-		  // WishList routes
-		  this.router
-			.post('/wishlist', verifyUserToken, createWishList)
-			.get('/wishlist/:wishlistId', verifyUserToken, getWishListById)
-			.get('/user/:userId/wishlist', verifyUserToken, getAllWishListsForUser)
-			.put('/wishlist/:wishlistId', verifyUserToken, updateWishList)
-			.delete('/wishlist/:wishlistId', verifyUserToken, deleteWishList);
-			
-		//   this.router
-		// 	.post('/createorderitem', verifyUserToken, createorderitemhandler)
-		// 	.get('/:id', verifyUserToken, getOrderItemById)
-		// 	.put('/:id', verifyUserToken, updateOrderItemhandler)
+		  
 
 		return this.router;
 	}
