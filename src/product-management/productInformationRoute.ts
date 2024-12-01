@@ -13,18 +13,18 @@ import {
 const router = Router();
 
 // Public routes (no auth required)
-router.get("/product-information", getAllProductInformation);  // Get all product information
-router.get("/product-information/:id", getProductInformation);  // Get specific product information
+router.get("/product-information", verifyUserToken, getAllProductInformation);  // Get all product information
+router.get("/product-information/:id", verifyUserToken, getProductInformation);  // Get specific product information
 
-router.get("/product-information/by-product/:productId", getProductInformationByProductId); //Get product information by product ID
+router.get("/product-information/by-product/:productId", verifyUserToken, getProductInformationByProductId); //Get product information by product ID
 
 
 // Protected routes (authentication and authorization required)
-router.post("/product-information", createProductInformation);  // Create product information
+router.post("/product-information", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), createProductInformation);  // Create product information
 
-router.put("/product-information/:id", updateProductInformation);  // Update product information
+router.put("/product-information/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), updateProductInformation);  // Update product information
 
 
-router.delete("/product-information/:id", deleteProductInformation);  // Delete product information
+router.delete("/product-information/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), deleteProductInformation);  // Delete product information
 
 export default router;
