@@ -9,6 +9,7 @@ import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
 import userRoutes from "./util/user.routes";
 import productRoutes from "./product-management/productRoute"
+import productInformationRoutes from "./product-management/productInformationRoute"
 import { PORT } from "./util/secrets";
 
 const apiVersion = "/api/v1";
@@ -26,6 +27,9 @@ app.use("/api/v1/users", verifyUserToken, userRoutes);
 
 //Product routes
 app.use("/api/v1/products", productRoutes);
+
+//Product Information routes
+app.use("/api/v1/products", productInformationRoutes);
 
 initOrderRoutes(app);
 
