@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomInt } from "crypto";
 import { paystackClient } from "./paystack";
 import { uniqueId } from "lodash";
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +19,3 @@ export const generatePaymentUrl = async(email: string, reference: string | undef
     }
 };
 
-export const GenerateOrderNumber = (): string => {
-    return uuidv4();
-}

@@ -1,4 +1,4 @@
-import CustomHttpError from "../util/error.handler.ts";
+import CustomHttpError from "../util/custom.error.ts";
 import prisma from "../util/lib/client.ts";
 import { GenerateOrderNumber } from "../util/payment.gateway.ts";
 import { Cart } from "../util/types/cart.types.ts";
@@ -48,7 +48,16 @@ export const getOrderById = async (orderId: number) => {
   });
 
   if (!order)
-    throw new Error("Order Not found")
+    throw new CustomHttpError(404, "Order Not found")
+
+  return order;
+};
+
+export const getOrderByNumber = async (orderNumber: string) => {
+  const order = orderRepository.findByOrderNumber(orderNumber);
+
+  if (!order)
+    throw new CustomHttpError(404, "Order Not found")
 
   return order;
 };

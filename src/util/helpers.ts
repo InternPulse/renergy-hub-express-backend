@@ -1,3 +1,5 @@
+import { randomInt } from "crypto";
+
 export const validateCategory = (requestBody: any)=>{
   const expectedProperties = ["categoryName", "description"];
   if(expectedProperties.some((prop) => !(prop in requestBody))){
@@ -22,3 +24,7 @@ export const sendErrorResponse = (err: any, res: any)=>{
   }
 };
 
+export const GenerateOrderNumber = (): string => {
+  const randomNum = randomInt(10000000000, 99999999999); // Generate a random 11-digit number
+  return randomNum.toString();
+}
