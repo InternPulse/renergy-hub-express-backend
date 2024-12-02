@@ -7,6 +7,7 @@ export default class OrderRepository {
         const order = prisma.order.create({
             data: {
               userId: createOrder.userId,
+              shippingAddressId: createOrder.shippingAddressId,
               orderNumber: createOrder.orderNumber,
               orderDate: new Date(),
               paymentStatus: PaymentStatus.PENDING,
@@ -26,21 +27,45 @@ export default class OrderRepository {
       }
 
     async findAll(): Promise<Order[]> {
-        const orders = await prisma.order.findMany();
+        const orders = await prisma.order.findMany(
+            {
+                include: {
+                    orderItems: true,
+                    payments: true,
+                    shippingOptions: true,
+                    orderReturns: true,
+                    shippingAddress: true
+                  }
+            }
+        );
 
         return orders;
     }
 
     async findByOrderId(id: number): Promise<Order> {
         const order = await prisma.order.findUnique({
-            where: { id }
+            where: { id },
+            include: {
+                orderItems: true,
+                payments: true,
+                shippingOptions: true,
+                orderReturns: true,
+                shippingAddress: true
+              }
           });
         return order;
     }
 
     async findByOrderNumber(orderNumber: string): Promise<Order> {
         const order = await prisma.order.findFirst({
-            where: { orderNumber }
+            where: { orderNumber },
+            include: {
+                orderItems: true,
+                payments: true,
+                shippingOptions: true,
+                orderReturns: true,
+                shippingAddress: true
+              }
           });
         return order;
     }

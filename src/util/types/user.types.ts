@@ -43,6 +43,8 @@ export interface ShippingAddress {
   country: string;
   isDefault: boolean;
   user: User;
+  order: Order[];
+
 }
 
 export interface Review {

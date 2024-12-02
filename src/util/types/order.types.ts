@@ -7,6 +7,7 @@ import { Decimal } from '@prisma/client/runtime/library';
 export interface Order {
   id: number;
   userId: number;
+  shippingAddressId: number;
   orderDate: Date;
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;

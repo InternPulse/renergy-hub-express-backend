@@ -5,6 +5,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 
 export interface CreateOrderDto {
     userId?: number;
+    shippingAddressId?: number;
     orderDate?: Date;
     orderNumber?: string;
     paymentStatus?: PaymentStatus;
@@ -31,7 +32,8 @@ export function validateCreateOrder(order: CreateOrderDto)
   {
     const JoiSchema = Joi.object({
       
-        userId: Joi.number().required(),     
+        userId: Joi.number().required(),  
+        shippingAddressId: Joi.number().required(),     
         orderDate: Joi.date().allow(null).optional(),
         orderNumber: Joi.string().allow('').optional(), 
         totalAmount: Joi.number().allow('',null).optional(),   
