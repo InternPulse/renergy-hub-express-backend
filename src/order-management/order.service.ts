@@ -20,6 +20,7 @@ export const getAllOrders = async () => {
       payments: true,
       shippingOptions: true,
       orderReturns: true,
+      shippingAddress: true
     },
   });
 };
@@ -32,6 +33,7 @@ export const getAllOrdersByUser = async (userId: number) => {
       payments: true,
       shippingOptions: true,
       orderReturns: true,
+      shippingAddress: true
     },
   });
 };
@@ -44,6 +46,7 @@ export const getOrderById = async (orderId: number) => {
       payments: true,
       shippingOptions: true,
       orderReturns: true,
+      shippingAddress: true
     },
   });
 
@@ -111,12 +114,23 @@ export const createOrder = async (data: CreateOrderDto) => {
 
     //console.log("Price", sum)
     
-  
+  const address = await prisma.shippingAddress.findFirst(
+    {
+      where: {
+        id: data.shippingAddressId
+      }
+    }
+  );
+
+  if(!address)
+    throw new CustomHttpError(404, `Address not found`);
 
   console.log("Price", sum)  
 
   data.totalAmount = +sum;
   //const user = await userRepository.findByUserId(data)
+
+  data.orderDate = new Date();
 
   const order = orderRepository.create(data)
 

@@ -82,7 +82,7 @@ model Review {
 
 model ShippingAddress {
   id          Int     @id @default(autoincrement())
-  userId      Int
+  userId      Int    
   state       String
   addressLine String
   zipCode     String
@@ -90,6 +90,7 @@ model ShippingAddress {
   country     String
   isDefault   Boolean @default(false)
   user        User    @relation(fields: [userId], references: [id])
+  order       Order[] 
 }
 
 model Payment {
@@ -108,16 +109,19 @@ model Payment {
 model Order {
   id              Int               @id @default(autoincrement())
   userId          Int
+  shippingAddressId          Int    
   orderNumber     String
   orderDate       DateTime          @default(now())
   paymentStatus   PaymentStatus     @default(PENDING)
   orderStatus     OrderStatus       @default(PENDING)
   totalAmount     Decimal
   user            User              @relation(fields: [userId], references: [id])
+  shippingAddress ShippingAddress   @relation(fields: [shippingAddressId], references: [id])
   orderItems      OrderItem[]
   orderReturns    OrderReturn[]
   payments        Payment[]
   shippingOptions ShippingOptions[]
+  
 }
 
 model OrderItem {
