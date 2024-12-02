@@ -10,7 +10,7 @@ export const createReview = async (
 ) => {
   try {
     const newReview = await reviewService.createReview({
-      ...req.body
+      ...req.body, userId: req.user?.userID
     })
   
     success(res, 201, newReview, "Review created successfully");
@@ -25,7 +25,7 @@ export const getAllReviews = async (
   next: NextFunction
 ) => {
   try {
-    const reviews = await reviewService.getAllReviews()
+    const reviews = await reviewService.getAllReviews(req.user?.userID)
     success(res, 200, reviews, "Reviews retrieved successfully");
   } catch (error) {
     next(error);
