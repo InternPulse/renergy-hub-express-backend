@@ -8,15 +8,17 @@ import { verifyUserToken } from "./util/authorizeUser";
 import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
 import userRoutes from "./util/user.routes";
-import productRoutes from "./product-management/productRoute"
-import productInformationRoutes from "./product-management/productInformationRoute"
+import productRoutes from "./product-management/productRoute";
+import productInformationRoutes from "./product-management/productInformationRoute";
 import { PORT } from "./util/secrets";
+import cors from "cors";
 
 const apiVersion = "/api/v1";
 
 const app: Express = express();
 // Apply middleware
 app.use(express.json());
+app.use(cors());
 app.use(cookieParser());
 
 //auth routes

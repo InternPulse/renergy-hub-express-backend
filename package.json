@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@types/cors": "^2.8.17",
     "@types/nodemailer": "^6.4.17",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
