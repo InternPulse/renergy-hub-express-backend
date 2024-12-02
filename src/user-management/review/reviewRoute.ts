@@ -1,21 +1,22 @@
 import { Router } from "express";
 import {
   createReview,
-  getAllReviewsForProduct,
+  getAllReviews,
   getReviewById,
   updateReview,
 } from "./review.controller";
 import { Route } from "../../util/route";
+import { verifyUserToken } from "../../util/authorizeUser";
 
 export class ReviewRoute extends Route {
   readonly name: string = "reviews";
 
   initRoutes(): Router {
     this.router
-      .post("/", createReview)
-      .get("/:id", getReviewById)
-      .get("/product/:productId/", getAllReviewsForProduct)
-      .put("/:id", updateReview);
+      .post("/", verifyUserToken, createReview)
+      .get("/:reviewId", verifyUserToken, getReviewById)
+      .get("/", getAllReviews)
+      .put("/:reviewId", updateReview);
 
     return this.router;
   }
