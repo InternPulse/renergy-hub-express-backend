@@ -292,7 +292,7 @@ export const login = async (req: Request, res: Response) => {
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
           expires: expiryDate,
-          sameSite: "lax",
+          sameSite: "none",
           secure: NODE_ENV === "production",
         });
 
