@@ -1,13 +1,15 @@
+import { PaymentMethod, PaymentStatus } from './enums';
 import { Order } from './order.types';
 import { User } from './user.types';
+
 export interface Payment {
   id: number;
   userId: number;
   orderId: number;
-  status: string;
+  status: PaymentStatus;
   amount: number;
-  createdAt: Date;
-  method: string;
+  paymentDate: Date;
+  method: PaymentMethod;
   user: User;
   order: Order;
 }

@@ -2,10 +2,12 @@ import { User } from './user.types';
 import { Payment, ShippingOptions } from './payment.types';
 import { Product } from './product.types';
 import { Cart, OrderStatus, PaymentStatus } from '.';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export interface Order {
   id: number;
   userId: number;
+  shippingAddressId: number;
   orderDate: Date;
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
@@ -18,15 +20,13 @@ export interface Order {
 }
 
 export interface OrderItem {
-  id: number;
-  orderId: number;
+  id?: number;
+  orderId?: number;
   productId: number;
   quantity: number;
-  price: number;
-  cartId: number;
-  order: Order;
-  product: Product;
-  cart: Cart;
+  price: Decimal;
+  order?: Order;
+  product?: Product;
 }
 
 export interface OrderReturn {

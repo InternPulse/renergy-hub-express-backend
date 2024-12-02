@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { createOrder, createorderitemhandler, getAllOrders, getOrderItemById, updateOrderItemhandler } from "./order.controller";
+import { createOrder, getAllOrders, performOrderOperation, getAllOrdersByUser, deleteOrder, getOrderById, updateOrder, trackOrder } from "./order.controller";
+import { createorderitemhandler, deletedorderitemsbyid, getOrderItemById, updateOrderItemhandler } from "./order.controller";
 import { Route } from "../util/route";
-import { deleteOrder, getOrderById, updateOrder } from "./order.service";
-import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "./wishlist.controller";
-
+import { createWishList, getWishListById, getAllWishListsForUser, updateWishList, deleteWishList } from "../wishlist-management/wishlist.controller";
+import { authorizeUserPermissions, authorizeUserRoles, verifyUserToken } from "../util/authorizeUser";
+import { generateAuthJWT } from '../util/authJWT'
 
 export class OrderRoute extends Route {
 	readonly name: string = 'orders';
@@ -11,26 +12,35 @@ export class OrderRoute extends Route {
 
 	initRoutes(): Router {
 		this.router
-		.post('/', createOrder)
-		.get('/', getAllOrders);
+		.post('/', verifyUserToken, createOrder)
+		.get('/', verifyUserToken, authorizeUserRoles(['ADMIN', 'VENDOR']), getAllOrders)
+		.get('/users', verifyUserToken, getAllOrdersByUser);
 
 		this.router
-		.get('/:orderId', getOrderById)
-		.put('/:orderId', updateOrder)
-		.delete('/:orderId', deleteOrder);
+		.post('/performOrderOperation', verifyUserToken, authorizeUserPermissions(['ADMIN']), performOrderOperation)
 
-		  // WishList routes
-		  this.router
-			.post('/wishlist', createWishList)
-			.get('/wishlist/:wishlistId', getWishListById)
-			.get('/user/:userId/wishlist', getAllWishListsForUser)
-			.put('/wishlist/:wishlistId', updateWishList)
-			.delete('/wishlist/:wishlistId', deleteWishList);
-			
-		  this.router
-			.post('/createorderitem',createorderitemhandler)
-			.get('/:id',getOrderItemById)
-			.put('/:id',updateOrderItemhandler)
+		this.router
+		.get('/track/:orderNumber', verifyUserToken, trackOrder)
+
+		// this.router
+		// .post('/v2/createOrderV2', verifyUserToken, createOrderV2)
+		
+		
+
+		//Order Items
+		// .post('/createorderitem',verifyUserToken,createorderitemhandler)
+		// .get('/getorderitems/:id',verifyUserToken,getOrderItemById)
+		// .put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)
+		// .delete('/deleteorderitems/:id',verifyUserToken,deletedorderitemsbyid)
+		// .post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
+
+
+		// this.router
+		// 	.get('/view/:orderId', verifyUserToken, getOrderById)
+		// 	.put('/view/:orderId', verifyUserToken, updateOrder)
+		// 	.delete('/view/:orderId', verifyUserToken, deleteOrder);
+
+		  
 
 		return this.router;
 	}

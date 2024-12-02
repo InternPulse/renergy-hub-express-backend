@@ -23,6 +23,6 @@ export const validateUserDetails = (userDetails: any) => {
     }
     return "accepted";
   } catch (error: any) {
-    console.log(error.message);
+    console.log("Validate User Details:", error.message);
   }
 };

@@ -1,36 +1,24 @@
 import { NextFunction, Request, Response } from 'express';
-import * as orderService from './order.service.ts';
-import { fail, success } from '../util/response.ts';
-import { CreateOrderDto, CreateOrderItemDto, OrderOperationDto } from './order.dto.ts';
-import { OrderItemService } from './order-item.service.ts';
-import { GenerateOrderNumber } from '../util/helpers.ts';
+import * as shippingAddressService from './shipping.service'
+import { success } from '../../util';
+import { CreateShippingAddressDto } from './shipping.address.dto';
 
-export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
+export const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try 
   {
-    const orders = await orderService.getAllOrders();
-    success(res, 201, orders, "Order returned successfully");
+    const shippingAddress = await shippingAddressService.getAllUserAddress(parseInt(req.user?.userID));
+    success(res, 201, shippingAddress, "Shipping Address returned successfully");
   }
   catch (error) {
     next(error);
   }
 };
 
-export const getAllOrdersByUser = async (req: Request, res: Response, next: NextFunction) => {
-  try 
-  {
-    const orders = await orderService.getAllOrdersByUser(parseInt(req.user?.userID));
-    success(res, 201, orders, "Order returned successfully");
-  }
-  catch (error) {
-    next(error);
-  }
-};
 
-export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
+export const getShippingAddressById = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
-    const order = await orderService.getOrderById(parseInt(req.params.orderId));
+    const order = await shippingAddressService.getShippingAddressById(parseInt(req.params.shippingAddressId));
     success(res, 201, order, "Order returned successfully");
   }
   catch (error) {
@@ -38,12 +26,12 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const createShippingAddress = async (req: Request, res: Response, next: NextFunction) => {
 
   try 
   {
-    const newOrder = await orderService.createOrder({ userId: parseInt(req.user?.userID), ...<CreateOrderDto>req.body, orderNumber: GenerateOrderNumber() });
-    success(res, 201, newOrder, "Order created successfully");
+    const newOrder = await shippingAddressService.createShippingAddress({ userId: parseInt(req.user?.userID), ...<CreateShippingAddressDto>req.body});
+    success(res, 201, newOrder, "Shipping Address created successfully");
   } 
   catch (error) 
   {
