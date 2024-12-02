@@ -66,8 +66,9 @@ export const getReviewById = async (reviewId: number) => {
   return review
 }
 
-export const getAllReviews = async () => {
+export const getAllReviews = async (userId: number) => {
   return prisma.review.findMany({
+    where: { userId },
     include : {
       user: {
         select :{
