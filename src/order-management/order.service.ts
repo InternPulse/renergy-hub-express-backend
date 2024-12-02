@@ -57,7 +57,9 @@ export const getOrderById = async (orderId: number) => {
 };
 
 export const getOrderByNumber = async (orderNumber: string) => {
-  const order = orderRepository.findByOrderNumber(orderNumber);
+  const order = await orderRepository.findByOrderNumber(orderNumber);
+
+  console.log(order)
 
   if (!order)
     throw new CustomHttpError(404, "Order Not found")

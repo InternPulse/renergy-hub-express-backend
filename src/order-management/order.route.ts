@@ -22,23 +22,23 @@ export class OrderRoute extends Route {
 		this.router
 		.get('/track/:orderNumber', verifyUserToken, trackOrder)
 
-		this.router
+		// this.router
 		// .post('/v2/createOrderV2', verifyUserToken, createOrderV2)
 		
 		
 
 		//Order Items
-		.post('/createorderitem',verifyUserToken,createorderitemhandler)
-		.get('/getorderitems/:id',verifyUserToken,getOrderItemById)
-		.put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)
-		.delete('/deleteorderitems/:id',verifyUserToken,deletedorderitemsbyid)
-		.post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
+		// .post('/createorderitem',verifyUserToken,createorderitemhandler)
+		// .get('/getorderitems/:id',verifyUserToken,getOrderItemById)
+		// .put('/updateorderitems/:id',verifyUserToken,updateOrderItemhandler)
+		// .delete('/deleteorderitems/:id',verifyUserToken,deletedorderitemsbyid)
+		// .post('/v2/performOrderOperation', verifyUserToken, performOrderOperation)
 
 
-		this.router
-			.get('/view/:orderId', verifyUserToken, getOrderById)
-			.put('/view/:orderId', verifyUserToken, updateOrder)
-			.delete('/view/:orderId', verifyUserToken, deleteOrder);
+		// this.router
+		// 	.get('/view/:orderId', verifyUserToken, getOrderById)
+		// 	.put('/view/:orderId', verifyUserToken, updateOrder)
+		// 	.delete('/view/:orderId', verifyUserToken, deleteOrder);
 
 		  
 
