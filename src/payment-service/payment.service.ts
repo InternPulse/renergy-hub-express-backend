@@ -45,6 +45,8 @@ export const initializePayment = async (user: User, data: CreatePaymentDto): Pro
 
     data.amount = order.totalAmount.toNumber();
 
+    data.amount = data.amount + order.shippingOption.amount.toNumber();
+
     const paymentId = uuidv4();
     const payment = await paymentRepository.create({ paymentId, ...data, userId: parseInt(user?.userID), paymentDate: new Date() });
 
