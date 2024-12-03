@@ -17,7 +17,7 @@ router.get("/category", verifyUserToken, getAllProductCategories);
 router.put("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), UpdateProduct);
 
 router.get("/", getAllProducts);
-router.get("/:id", verifyUserToken, getProduct);
+router.get("/:id", getProduct);
 router.delete("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), deleteProduct);
 
 
