@@ -14,9 +14,9 @@ export interface Payment {
   order: Order;
 }
 
-export interface ShippingOptions {
+export interface ShippingOption {
   id: number;
   amount: number;
-  orderId: number;
-  order: Order;
+  name: string;
+  orders: Order[];
 }

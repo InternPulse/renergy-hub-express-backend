@@ -12,7 +12,7 @@ import CustomHttpError from "./custom.error";
  */
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) =>{
     // default HTTP status code and error message
-    let httpStatusCode = 400;
+    let httpStatusCode = 500;
     let message = "Error Occurred";
 
     console.log(err instanceof CustomHttpError);

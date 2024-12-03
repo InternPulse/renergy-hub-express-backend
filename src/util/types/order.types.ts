@@ -1,5 +1,5 @@
 import { User } from './user.types';
-import { Payment, ShippingOptions } from './payment.types';
+import { Payment, ShippingOption } from './payment.types';
 import { Product } from './product.types';
 import { Cart, OrderStatus, PaymentStatus } from '.';
 import { Decimal } from '@prisma/client/runtime/library';
@@ -15,7 +15,6 @@ export interface Order {
   user: User;
   orderItems?: OrderItem[];
   payments?: Payment[];
-  shippingOptions?: ShippingOptions[];
   orderReturns?: OrderReturn[];
 }
 
