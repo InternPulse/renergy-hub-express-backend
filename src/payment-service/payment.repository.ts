@@ -4,7 +4,7 @@ import { CreatePaymentDto } from "./payment.dto.ts";
 
 export class PaymentRepository {
 
-    async create(data: CreatePaymentDto): Promise<Payment> {
+    async create(data: Omit<CreatePaymentDto, 'callbackUrl'>): Promise<Payment> {
         const payment = await prisma.payment.create({
           data: { ...data },
         });

@@ -3,12 +3,12 @@ import { PaymentMethod } from "../util/types/enums";
 
 export interface CreatePaymentDto {
     paymentId?: string;
-    userId: number;
+    userId?: number;
     orderId?: number;
     amount?: number;
     method?: PaymentMethod;
     paymentDate?: Date;
-    callbackUrl: string;
+    callbackUrl?: string;
 }
 
 export interface PaymentDto {
