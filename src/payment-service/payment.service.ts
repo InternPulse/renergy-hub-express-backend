@@ -52,7 +52,7 @@ export const initializePayment = async (user: User, data: CreatePaymentDto): Pro
 
     const userObj = await userRepository.findByUserId(parseInt(user?.userID));
 
-    const paymentUrl = await generatePaymentUrl(<string>userObj?.email, paymentId, order.totalAmount.toNumber());
+    const paymentUrl = await generatePaymentUrl(<string>userObj?.email, paymentId, data.amount, data.callbackUrl);
   
     return { paymentUrl };
 };
