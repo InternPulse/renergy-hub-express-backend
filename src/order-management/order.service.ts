@@ -18,7 +18,7 @@ export const getAllOrders = async () => {
     include: {
       orderItems: true,
       payments: true,
-      shippingOptions: true,
+      shippingOption: true,
       orderReturns: true,
       shippingAddress: true
     },
@@ -31,7 +31,7 @@ export const getAllOrdersByUser = async (userId: number) => {
     include: {
       orderItems: true,
       payments: true,
-      shippingOptions: true,
+      shippingOption: true,
       orderReturns: true,
       shippingAddress: true
     },
@@ -44,7 +44,7 @@ export const getOrderById = async (orderId: number) => {
     include: {
       orderItems: true,
       payments: true,
-      shippingOptions: true,
+      shippingOption: true,
       orderReturns: true,
       shippingAddress: true
     },
@@ -126,6 +126,17 @@ export const createOrder = async (data: CreateOrderDto) => {
 
   if(!address)
     throw new CustomHttpError(404, `Address not found`);
+
+  const shippingOption = await prisma.shippingOption.findFirst(
+    {
+      where: {
+        id: data.shippingOptionId
+      }
+    }
+  );
+
+  if(!shippingOption)
+    throw new CustomHttpError(404, `Shipping Option not found`);
 
   console.log("Price", sum)  
 

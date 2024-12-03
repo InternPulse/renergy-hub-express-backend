@@ -5,6 +5,7 @@ import { OrderRoute } from "../order-management/order.route";
 import { PaymentRoute } from "../payment-service/payment.route";
 import { WishListRoute } from "../wishlist-management/wishlist.route";
 import { ShippingAddressRoute } from "../order-management/shippingAddress/shipping.address.route";
+import { ShippingOptionRoute } from "../order-management/shippingOption/shipping.option.route";
 
 const apiVersion = "/api/v1";
 
@@ -13,7 +14,8 @@ const routes: Record<string, Route> = {
   reviews: new ReviewRoute(),
   payments: new PaymentRoute(),
   wishlists: new WishListRoute(),
-  shippingAddress: new ShippingAddressRoute()
+  shippingAddress: new ShippingAddressRoute(),
+  shippingOption: new ShippingOptionRoute()
 };
 
 export const initOrderRoutes = (app: any) => {

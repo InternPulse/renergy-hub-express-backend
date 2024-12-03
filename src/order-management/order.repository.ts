@@ -8,6 +8,7 @@ export default class OrderRepository {
             data: {
               userId: createOrder.userId,
               shippingAddressId: createOrder.shippingAddressId,
+              shippingOptionId: createOrder.shippingOptionId,
               orderNumber: createOrder.orderNumber,
               orderDate: new Date(),
               paymentStatus: PaymentStatus.PENDING,
@@ -32,7 +33,7 @@ export default class OrderRepository {
                 include: {
                     orderItems: true,
                     payments: true,
-                    shippingOptions: true,
+                    shippingOption: true,
                     orderReturns: true,
                     shippingAddress: true
                   }
@@ -48,7 +49,7 @@ export default class OrderRepository {
             include: {
                 orderItems: true,
                 payments: true,
-                shippingOptions: true,
+                shippingOption: true,
                 orderReturns: true,
                 shippingAddress: true
               }
@@ -62,7 +63,7 @@ export default class OrderRepository {
             include: {
                 orderItems: true,
                 payments: true,
-                shippingOptions: true,
+                shippingOption: true,
                 orderReturns: true,
                 shippingAddress: true
               }

@@ -109,7 +109,8 @@ model Payment {
 model Order {
   id              Int               @id @default(autoincrement())
   userId          Int
-  shippingAddressId          Int    
+  shippingAddressId          Int   
+  shippingOptionId           Int    
   orderNumber     String
   orderDate       DateTime          @default(now())
   paymentStatus   PaymentStatus     @default(PENDING)
@@ -117,10 +118,10 @@ model Order {
   totalAmount     Decimal
   user            User              @relation(fields: [userId], references: [id])
   shippingAddress ShippingAddress   @relation(fields: [shippingAddressId], references: [id])
+  shippingOption  ShippingOption    @relation(fields: [shippingOptionId], references: [id])
   orderItems      OrderItem[]
   orderReturns    OrderReturn[]
   payments        Payment[]
-  shippingOptions ShippingOptions[]
   
 }
 
@@ -170,11 +171,11 @@ model ProductInformation {
   product   Product @relation(fields: [productId], references: [id])
 }
 
-model ShippingOptions {
+model ShippingOption {
   id      Int     @id @default(autoincrement())
+  name    String
   amount  Decimal
-  orderId Int
-  order   Order   @relation(fields: [orderId], references: [id])
+  orders   Order[] 
 }
 
 model OrderReturn {
