@@ -13,7 +13,7 @@ const router = Router();
 
 router.post("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), AddNewProduct);
 router.post("/category", verifyUserToken, authorizeUserRoles(["ADMIN"]), addProductCategory);
-router.get("/category", verifyUserToken, getAllProductCategories);
+router.get("/category", getAllProductCategories);
 router.put("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), UpdateProduct);
 
 router.get("/", getAllProducts);
