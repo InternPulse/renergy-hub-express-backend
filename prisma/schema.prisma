@@ -31,6 +31,7 @@ model User {
   city                       String?
   zipCode                    String?
   taxID                      String?
+  imageURL                   String?
   confirmPassword            String?
   isVerified                 String            @default("false")
   verificationToken          String?

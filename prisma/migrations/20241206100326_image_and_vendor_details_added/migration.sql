@@ -29,6 +29,7 @@ CREATE TABLE "User" (
     "city" TEXT,
     "zipCode" TEXT,
     "taxID" TEXT,
+    "imageURL" TEXT,
     "confirmPassword" TEXT,
     "isVerified" TEXT NOT NULL DEFAULT 'false',
     "verificationToken" TEXT,

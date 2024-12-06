@@ -21,7 +21,20 @@ let emailFirstName: string;
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    //Validate user details
+    let usertype = req.body["userType"];
+
+    //check user type
+    if (usertype != "CUSTOMER") {
+      console.error("Invalid user type");
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid user type",
+      });
+      return;
+    }
+
+    //validate customer details
     let result = validateUserDetails(req.body);
 
     if (result == "rejected") {

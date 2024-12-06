@@ -52,7 +52,7 @@ async function sendVerificationEmail(
 `, // html body
   });
 
-  // console.log("Message sent: %s", info.messageId);
+  console.log("Message sent: %s", info.messageId);
 }
 
 export default sendVerificationEmail;
