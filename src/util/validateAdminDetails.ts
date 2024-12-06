@@ -1,6 +1,6 @@
-export const validateUserDetails = (userDetails: any) => {
+export const validateAdminDetails = (adminDetails: any) => {
   try {
-    const { firstName, lastName, email, password, userType } = userDetails;
+    const { firstName, lastName, email, password, userType } = adminDetails;
 
     if (!firstName || !lastName || !email || !password || !userType) {
       return "rejected";

@@ -23,6 +23,13 @@ CREATE TABLE "User" (
     "socialId" TEXT,
     "registrationDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "phoneNumber" TEXT,
+    "brandName" TEXT,
+    "brandType" TEXT,
+    "streetAddress" TEXT,
+    "city" TEXT,
+    "zipCode" TEXT,
+    "taxID" TEXT,
+    "imageURL" TEXT,
     "confirmPassword" TEXT,
     "isVerified" TEXT NOT NULL DEFAULT 'false',
     "verificationToken" TEXT,
@@ -107,6 +114,7 @@ CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "shippingAddressId" INTEGER NOT NULL,
+    "shippingOptionId" INTEGER NOT NULL,
     "orderNumber" TEXT NOT NULL,
     "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "paymentStatus" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
@@ -163,12 +171,12 @@ CREATE TABLE "ProductInformation" (
 );
 
 -- CreateTable
-CREATE TABLE "ShippingOptions" (
+CREATE TABLE "ShippingOption" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
-    "orderId" INTEGER NOT NULL,
 
-    CONSTRAINT "ShippingOptions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ShippingOption_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -230,6 +238,9 @@ ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") RE
 ALTER TABLE "Order" ADD CONSTRAINT "Order_shippingAddressId_fkey" FOREIGN KEY ("shippingAddressId") REFERENCES "ShippingAddress"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_shippingOptionId_fkey" FOREIGN KEY ("shippingOptionId") REFERENCES "ShippingOption"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -243,9 +254,6 @@ ALTER TABLE "Product" ADD CONSTRAINT "Product_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "ProductInformation" ADD CONSTRAINT "ProductInformation_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ShippingOptions" ADD CONSTRAINT "ShippingOptions_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OrderReturn" ADD CONSTRAINT "OrderReturn_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
