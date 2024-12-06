@@ -1,24 +1,8 @@
 export const validateUserDetails = (userDetails: any) => {
   try {
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      confirmPassword,
-      phoneNumber,
-    } = userDetails;
+    const { firstName, lastName, email, password, userType } = userDetails;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !username ||
-      !email ||
-      !password ||
-      !confirmPassword ||
-      !phoneNumber
-    ) {
+    if (!firstName || !lastName || !email || !password || !userType) {
       return "rejected";
     }
     return "accepted";

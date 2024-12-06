@@ -14,11 +14,15 @@ import {
   forgotPassword,
   verifyForgotPassword,
   changePassword,
+  registerVendor,
+  registerAdmin,
 } from "../user-management/controller/auth.controllers";
 
 const router = Router();
 
-router.post("/register", registerUser);
+router.post("/register/customer", registerUser);
+router.post("/register/vendor", registerVendor);
+router.post("/register/admin", registerAdmin);
 router.post("/verify", verifyEmail);
 router.get("/resend/:id", resendEmail);
 router.post("/login", login);
