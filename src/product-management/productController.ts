@@ -183,7 +183,8 @@ export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
       include: {
-        category: true // Include category details
+        category: true, // Include category details
+        user: true
       },
     });
 
