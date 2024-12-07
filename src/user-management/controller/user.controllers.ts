@@ -190,6 +190,15 @@ export const updateVendorByID = async (req: Request, res: Response) => {
       return;
     }
 
+    if (userExist.userType != "VENDOR") {
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "User is not a vendor .",
+      });
+      return;
+    }
+
     //validate input
     const {
       firstName,
