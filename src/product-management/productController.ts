@@ -184,7 +184,20 @@ export const getAllProducts = async (req: Request, res: Response) => {
     const products = await prisma.product.findMany({
       include: {
         category: true, // Include category details
-        user: true
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            brandName: true,
+            brandType: true,
+            phoneNumber: true,
+            streetAddress: true,
+            city: true,
+            zipCode: true,
+            imageURL: true
+            // Exclude 'content' by not selecting it
+          },
+        },
       },
     });
 
@@ -210,7 +223,21 @@ export const getProduct = async (req: Request, res: Response) => {
         id: parseInt(id, 10), // Ensure the ID is parsed as an integer
       },
       include: {
-        category: true // Include related category details
+        category: true, // Include related category details
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            brandName: true,
+            brandType: true,
+            phoneNumber: true,
+            streetAddress: true,
+            city: true,
+            zipCode: true,
+            imageURL: true
+            // Exclude 'content' by not selecting it
+          },
+        },
       },
     });
 
