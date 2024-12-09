@@ -3,7 +3,7 @@ import { Express, Request, Response } from "express";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./util";
-import { verifyUserToken } from "./util/authorizeUser";
+// import { verifyUserToken } from "./util/authorizeUser";
 // import authRoutes from './routes/auth.route';
 import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRoutes);
 
 //user routes
-app.use("/api/v1/users", verifyUserToken, userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 //Product routes
 app.use("/api/v1/products", productRoutes);
