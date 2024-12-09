@@ -4,7 +4,7 @@ import prisma from "../util/db";
 
 export const AddNewProduct  = async (req: Request, res: Response)=>{
   const user = req.user as {
-    userID: string,
+    userID: any,
     role: string
   }
   const { categoryId, name, description, price, stock, image } = req.body;
@@ -62,7 +62,7 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
 
 export const UpdateProduct  = async (req: Request, res: Response)=>{
   const user = req.user as {
-    userID: string,
+    userID: any,
     role: string
   }
   const { id } = req.params;
