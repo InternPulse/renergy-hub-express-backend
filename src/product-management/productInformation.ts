@@ -125,47 +125,71 @@ export const getAllProductInformation = async (req: Request, res: Response) => {
 };
 
 
-
 export const getProductInformation = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id } = req.params; // Extract product ID from request parameters
 
   try {
-    // Validate the ID parameter
-    const productInformationId = parseInt(id, 10);
-    if (isNaN(productInformationId) || productInformationId <= 0) {
+    // Validate and convert the ID to an integer
+    const productId = parseInt(id, 10);
+    if (isNaN(productId) || productId <= 0) {
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: "Invalid ProductInformation ID.",
+        message: "Invalid Product ID. It must be a positive number.",
       });
     }
 
-    // Fetch the ProductInformation with the associated Product details
-    const productInformation = await prisma.productInformation.findUnique({
-      where: { id: productInformationId },
+    // Query the database using Prisma
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
       include: {
-        product: true, // Include related Product details
+        category: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            username: true,
+            phoneNumber: true,
+            streetAddress: true,
+            city: true,
+            zipCode: true,
+            imageURL: true,
+          },
+        },
       },
     });
 
-    // Handle not found case
-    if (!productInformation) {
+    // Handle case where product is not found
+    if (!product) {
       return res.status(404).json({
         status: "error",
         code: 404,
-        message: "ProductInformation not found.",
+        message: "Product not found.",
       });
     }
 
-    // Return success response
+    // Format response data if needed (optional)
+    const responseData = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category,
+      user: product.user,
+    };
+
+    // Return product details
     return res.status(200).json({
       status: "success",
       code: 200,
-      data: productInformation,
+      data: responseData,
     });
   } catch (err: any) {
-    console.error(err.message);
-    sendErrorResponse(err, res);
+    console.error("Error fetching product details:", err.message);
+
+    // Send standardized error response
+    return sendErrorResponse(err, res);
   }
 };
 
