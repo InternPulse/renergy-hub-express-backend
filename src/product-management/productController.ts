@@ -3,10 +3,10 @@ import { validateCategory, sendErrorResponse, validateProduct } from "../util/he
 import prisma from "../util/db";
 
 export const AddNewProduct  = async (req: Request, res: Response)=>{
-  const user = req.user as {
-    userID: any,
-    role: string
-  }
+  // const user = req.user as {
+  //   userID: any,
+  //   role: string
+  // }
 
   if(!req.file){
     return res.status(400).json({
@@ -15,7 +15,7 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
       message: "Product image required"
     })
   }
-  const { categoryId, name, description, price, stock } = req.body;
+  const { categoryId, userId, name, description, price, stock } = req.body;
   if(!categoryId || !name || !description || !price || !stock){
     return res.status(400).json({
       status: "error",
@@ -54,7 +54,8 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
         },
         user: {
           connect: {
-            id: parseInt(user.userID)
+            // id: parseInt(user.userID)
+            id: parseInt(userId)
           }
         }
       }
