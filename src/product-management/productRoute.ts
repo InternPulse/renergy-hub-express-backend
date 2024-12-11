@@ -16,7 +16,7 @@ const router = Router();
 router.post("/", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), upload.single("image"), AddNewProduct);
 router.post("/category", verifyUserToken, authorizeUserRoles(["ADMIN"]), addProductCategory);
 router.get("/category", getAllProductCategories);
-router.put("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), UpdateProduct);
+router.put("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), upload.single("image"), UpdateProduct);
 router.get("/", getAllProducts);
 router.get("/:id", getProduct);
 router.delete("/:id", verifyUserToken, authorizeUserRoles(["ADMIN", "VENDOR"]), deleteProduct);
