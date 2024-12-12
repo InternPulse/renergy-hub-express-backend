@@ -19,18 +19,18 @@ const app: Express = express();
 // Apply middleware
 app.use(express.json());
 
-// app.use(cors());
+app.use(cors());
 
 
-app.use(function (_, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+// app.use(function (_, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+//   res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  next();
-});
+//   next();
+// });
 
 app.use(cookieParser());
 
