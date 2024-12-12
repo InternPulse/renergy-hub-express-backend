@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as reviewService from "./review.service";
 import { success, fail } from "../../util/response";
+import CustomHttpError from "../../util/custom.error";
 
 // Create a review
 export const createReview = async (
@@ -9,11 +10,13 @@ export const createReview = async (
   next: NextFunction
 ) => {
   try {
+     const userId = parseInt(req.user?.id as string);
+      if (isNaN(userId)) throw new CustomHttpError(400, "Invalid user ID");
     const newReview = await reviewService.createReview({
-      ...req.body, userId: req.user?.userID
+      ...req.body,
+      userId: userId
     })
-  
-    success(res, 201, newReview, "Review created successfully");
+    success(res, 201, { ...newReview, userId: req.user?.id }, "Review created successfully");
   } catch (error) {
     next(error);
   }
@@ -42,8 +45,8 @@ export const getReviewById = async (
 
   try {
    
-    const reviewId = parseInt(params.id);
-
+    const reviewId = parseInt(params.reviewId);
+     if (isNaN(reviewId)) throw new CustomHttpError(400, "Invalid review ID");
     const review = await reviewService.getReviewById(reviewId);
     return success(res, 200, review, "Review retrieved successfully");
   } catch (error) {

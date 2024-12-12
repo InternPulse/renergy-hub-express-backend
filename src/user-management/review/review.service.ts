@@ -3,6 +3,7 @@ import prisma from "../../util/lib/client";
 import { CreateReviewDTO, UpdateReviewDTO } from "./create-review.dto";
 
 export const createReview = async (data: CreateReviewDTO) => {
+  
   const user = await prisma.user.findUnique({
     where: {id: data.userId}
   })
