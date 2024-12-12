@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(function (_, res, next) {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://renergy-hub-frontendxyz.vercel.app, http://localhost:5173"
+    "https://renergy-hub-frontendxyz.vercel.app"
   );
 
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
