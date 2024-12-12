@@ -1,6 +1,5 @@
 import Joi, { func } from "joi";
 export interface CreateReviewDTO {
-  userId: number;
   productId: number;
   rating: number;
   comment: string;
@@ -14,7 +13,6 @@ export interface UpdateReviewDTO {
 
 export function validateCreateReview(review: CreateReviewDTO){
     const JoiSchema = Joi.object({
-        userId: Joi.number().required(),
         productId: Joi.number().required(),
         rating: Joi.number().min(1).max(5).required(),
         comment: Joi.string().required(),
