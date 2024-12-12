@@ -22,7 +22,10 @@ app.use(express.json());
 // app.use(cors());
 
 app.use(function (_, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5176");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://renergy-hub-frontendxyz.vercel.app, http://localhost:5173"
+  );
 
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 
