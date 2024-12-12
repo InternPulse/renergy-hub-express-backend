@@ -19,11 +19,7 @@ const app: Express = express();
 // Apply middleware
 app.use(express.json());
 
-app.use(cors({
-  origin: ['*'],
-  credentials: true,
-  exposedHeaders: ['set-cookie'],
-}),);
+app.use(cors());
 
 
 // app.use(function (_, res, next) {
