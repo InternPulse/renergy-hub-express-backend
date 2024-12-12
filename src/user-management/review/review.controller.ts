@@ -10,9 +10,11 @@ export const createReview = async (
   next: NextFunction
 ) => {
   try {
+     const userId = parseInt(req.user?.id as string);
+      if (isNaN(userId)) throw new CustomHttpError(400, "Invalid user ID");
     const newReview = await reviewService.createReview({
       ...req.body,
-      userId: req.user?.id
+      userId: userId
     })
     success(res, 201, { ...newReview, userId: req.user?.id }, "Review created successfully");
   } catch (error) {
