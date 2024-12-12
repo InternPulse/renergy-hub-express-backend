@@ -16,7 +16,7 @@ export class ReviewRoute extends Route {
       .post("/", verifyUserToken, createReview)
       .get("/:reviewId", verifyUserToken, getReviewById)
       .get("/", getAllReviews)
-      .put("/:reviewId", updateReview);
+      .put("/:reviewId", verifyUserToken, updateReview);
 
     return this.router;
   }
