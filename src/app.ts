@@ -11,14 +11,24 @@ import userRoutes from "./util/user.routes";
 import productRoutes from "./product-management/productRoute";
 import productInformationRoutes from "./product-management/productInformationRoute";
 import { PORT } from "./util/secrets";
-import cors from "cors";
+// import cors from "cors";
 
 const apiVersion = "/api/v1";
 
 const app: Express = express();
 // Apply middleware
 app.use(express.json());
-app.use(cors());
+
+app.use(function (_, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  next();
+});
+
 app.use(cookieParser());
 
 //auth routes
