@@ -19,10 +19,15 @@ const app: Express = express();
 // Apply middleware
 app.use(express.json());
 
-app.use(cors({
-  origin: 'http://localhost:5173', // Allow client origin
-  credentials: true,              // Allow cookies to be sent
-}));
+app.use(function (_, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  next();
+});
 
 app.use(cookieParser());
 
