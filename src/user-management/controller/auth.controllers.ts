@@ -532,7 +532,7 @@ export const login = async (req: Request, res: Response) => {
           httpOnly: true,
           expires: expiryDate,
           sameSite: "none",
-          secure: false,
+          secure: NODE_ENV === "production",
         });
 
         const userData = await prisma.user.findUnique({
