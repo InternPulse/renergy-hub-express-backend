@@ -531,8 +531,8 @@ export const login = async (req: Request, res: Response) => {
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
           expires: expiryDate,
-          sameSite: "lax",
-          secure: NODE_ENV === "production",
+          sameSite: "none",
+          secure: false,
         });
 
         const userData = await prisma.user.findUnique({

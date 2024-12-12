@@ -19,7 +19,10 @@ const app: Express = express();
 // Apply middleware
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow client origin
+  credentials: true,              // Allow cookies to be sent
+}));
 
 app.use(cookieParser());
 
