@@ -3,12 +3,20 @@ import { validateCategory, sendErrorResponse, validateProduct } from "../util/he
 import prisma from "../util/db";
 
 export const AddNewProduct  = async (req: Request, res: Response)=>{
-  const user = req.user as {
-    userID: string,
-    role: string
+  // const user = req.user as {
+  //   userID: any,
+  //   role: string
+  // }
+
+  if(!req.file){
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      message: "Product image required"
+    })
   }
-  const { categoryId, name, description, price, stock, image } = req.body;
-  if(!categoryId || !name || !description || !price || !stock || !image){
+  const { categoryId, userId, name, description, price, stock } = req.body;
+  if(!categoryId || !name || !description || !price || !stock){
     return res.status(400).json({
       status: "error",
       code: 400,
@@ -29,22 +37,25 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
       message: "Invalid product category",
     });
   }
+ 
   try{
+    const imageURL = (req.file as any).path;
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        price,
-        stock,
-        image,
+        price: parseInt(price),
+        stock: parseInt(stock),
+        image: imageURL,
         category: {
           connect: {
-            id: categoryId
+            id: parseInt(categoryId)
           }
         },
         user: {
           connect: {
-            id: parseInt(user.userID)
+            // id: parseInt(user.userID)
+            id: parseInt(userId)
           }
         }
       }
@@ -56,13 +67,17 @@ export const AddNewProduct  = async (req: Request, res: Response)=>{
     })
   }
   catch(err: any){
-    console.log(err.message) 
+    return res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Internal server error"
+    }) 
   }
 };
 
 export const UpdateProduct  = async (req: Request, res: Response)=>{
   const user = req.user as {
-    userID: string,
+    userID: any,
     role: string
   }
   const { id } = req.params;
@@ -80,9 +95,17 @@ export const UpdateProduct  = async (req: Request, res: Response)=>{
       message: "Product not found",
     });
   }
+
+  if(!req.file){
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      message: "Product image required"
+    })
+  }
  
-  const { categoryId, name, description, price, stock, image } = req.body;
-  if(!categoryId || !name || !description || !price || !stock || !image){
+  const { categoryId, name, description, price, stock } = req.body;
+  if(!categoryId || !name || !description || !price || !stock){
     return res.status(400).json({
       status: "error",
       code: 400,
@@ -104,17 +127,18 @@ export const UpdateProduct  = async (req: Request, res: Response)=>{
     });
   }
   try{
+    const imageURL = (req.file as any).path;
     const product = await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
         name,
         description,
-        price,
-        stock,
-        image,
+        price: parseInt(price),
+        stock: parseInt(stock),
+        image: imageURL,
         category: {
           connect: {
-            id: categoryId
+            id: parseInt(categoryId)
           }
         },
         user: {
@@ -124,14 +148,18 @@ export const UpdateProduct  = async (req: Request, res: Response)=>{
         }
       }
     });
-    return res.status(201).json({
+    return res.status(200).json({
       status: "success",
-      code: 201,
+      code: 200,
       data: product
     })
   }
   catch(err: any){
-    console.log(err) 
+    return res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Internal server error"
+    }) 
   }
 };
 
@@ -174,16 +202,71 @@ export const getAllProductCategories = async (req: Request, res: Response) => {
       data: categories
     });
   } catch (err: any) {
-    console.error(err.message);
     sendErrorResponse(err, res);
   }
 };
+
+export const deleteProductCategory = async (req: Request, res: Response)=>{
+  const { id } = req.params; // Get the product ID from the route parameters
+
+  try {
+    const existingProductCategory = await prisma.Category.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!existingProductCategory) {
+      return res.status(404).json({
+        status: "error",
+        code: 404,
+        message: "Category not found",
+      });
+    }
+
+    await prisma.product.deleteMany({
+      where: {
+        categoryId: parseInt(id),
+      },
+    });
+    
+    await prisma.category.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      code: 200,
+      message: "Product category deleted successfully",
+    });
+  } catch (err: any) {
+    console.log(err)
+    return res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "internal server error"
+    })
+  }
+
+}
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
       include: {
-        category: true // Include category details
+        category: true, // Include category details
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            brandName: true,
+            brandType: true,
+            phoneNumber: true,
+            streetAddress: true,
+            city: true,
+            zipCode: true,
+            imageURL: true
+            // Exclude 'content' by not selecting it
+          },
+        },
       },
     });
 
@@ -193,7 +276,6 @@ export const getAllProducts = async (req: Request, res: Response) => {
       data: products,
     });
   } catch (err: any) {
-    console.error(err.message);
     sendErrorResponse(err, res);
   }
 };
@@ -209,7 +291,21 @@ export const getProduct = async (req: Request, res: Response) => {
         id: parseInt(id, 10), // Ensure the ID is parsed as an integer
       },
       include: {
-        category: true // Include related category details
+        category: true, // Include related category details
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            brandName: true,
+            brandType: true,
+            phoneNumber: true,
+            streetAddress: true,
+            city: true,
+            zipCode: true,
+            imageURL: true
+            // Exclude 'content' by not selecting it
+          },
+        },
       },
     });
 
@@ -229,7 +325,6 @@ export const getProduct = async (req: Request, res: Response) => {
       data: product,
     });
   } catch (err: any) {
-    console.error(err.message);
     sendErrorResponse(err, res);
   }
 };
@@ -241,7 +336,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
   try {
     // Check if the product exists
     const existingProduct = await prisma.product.findUnique({
-      where: { id: parseInt(id, 10) },
+      where: { id: parseInt(id) },
     });
 
     if (!existingProduct) {
@@ -254,7 +349,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     // Delete the product
     await prisma.product.delete({
-      where: { id: parseInt(id, 10) },
+      where: { id: parseInt(id) },
     });
 
     return res.status(200).json({
@@ -263,7 +358,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
       message: "Product deleted successfully",
     });
   } catch (err: any) {
-    console.error(err.message);
     sendErrorResponse(err, res);
   }
 };

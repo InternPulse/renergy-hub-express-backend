@@ -16,7 +16,7 @@ const router = Router();
 router.get("/product-information", verifyUserToken, getAllProductInformation);  // Get all product information
 router.get("/product-information/:id", verifyUserToken, getProductInformation);  // Get specific product information
 
-router.get("/product-information/by-product/:productId", verifyUserToken, getProductInformationByProductId); //Get product information by product ID
+router.get("/product-information/:productId", verifyUserToken, getProductInformationByProductId); //Get product information by product ID
 
 
 // Protected routes (authentication and authorization required)

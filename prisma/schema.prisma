@@ -25,6 +25,13 @@ model User {
   socialId                   String?           @unique
   registrationDate           DateTime          @default(now())
   phoneNumber                String?
+  brandName                  String?
+  brandType                  String?
+  streetAddress              String?
+  city                       String?
+  zipCode                    String?
+  taxID                      String?
+  imageURL                   String?
   confirmPassword            String?
   isVerified                 String            @default("false")
   verificationToken          String?
@@ -60,13 +67,13 @@ model WishList {
 }
 
 model Cart {
-  id         Int         @id @default(autoincrement())
-  productId  Int
-  userId     Int
-  price      Decimal
-  quantity   Int
-  product    Product     @relation(fields: [productId], references: [id])
-  user       User        @relation(fields: [userId], references: [id])
+  id        Int     @id @default(autoincrement())
+  productId Int
+  userId    Int
+  price     Decimal
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model Review {
@@ -82,7 +89,7 @@ model Review {
 
 model ShippingAddress {
   id          Int     @id @default(autoincrement())
-  userId      Int    
+  userId      Int
   state       String
   addressLine String
   zipCode     String
@@ -90,38 +97,38 @@ model ShippingAddress {
   country     String
   isDefault   Boolean @default(false)
   user        User    @relation(fields: [userId], references: [id])
-  order       Order[] 
+  order       Order[]
 }
 
 model Payment {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  orderId         Int
-  paymentId       String
-  status          PaymentStatus @default(PENDING)
-  amount          Decimal
-  paymentDate     DateTime
-  method          PaymentMethod @default(ONLINE)
-  user            User     @relation(fields: [userId], references: [id])
-  order           Order    @relation(fields: [orderId], references: [id])
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  orderId     Int
+  paymentId   String
+  status      PaymentStatus @default(PENDING)
+  amount      Decimal
+  paymentDate DateTime
+  method      PaymentMethod @default(ONLINE)
+  user        User          @relation(fields: [userId], references: [id])
+  order       Order         @relation(fields: [orderId], references: [id])
 }
 
 model Order {
-  id              Int               @id @default(autoincrement())
-  userId          Int
-  shippingAddressId          Int    
-  orderNumber     String
-  orderDate       DateTime          @default(now())
-  paymentStatus   PaymentStatus     @default(PENDING)
-  orderStatus     OrderStatus       @default(PENDING)
-  totalAmount     Decimal
-  user            User              @relation(fields: [userId], references: [id])
-  shippingAddress ShippingAddress   @relation(fields: [shippingAddressId], references: [id])
-  orderItems      OrderItem[]
-  orderReturns    OrderReturn[]
-  payments        Payment[]
-  shippingOptions ShippingOptions[]
-  
+  id                Int             @id @default(autoincrement())
+  userId            Int
+  shippingAddressId Int
+  shippingOptionId  Int
+  orderNumber       String
+  orderDate         DateTime        @default(now())
+  paymentStatus     PaymentStatus   @default(PENDING)
+  orderStatus       OrderStatus     @default(PENDING)
+  totalAmount       Decimal
+  user              User            @relation(fields: [userId], references: [id])
+  shippingAddress   ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingOption    ShippingOption  @relation(fields: [shippingOptionId], references: [id])
+  orderItems        OrderItem[]
+  orderReturns      OrderReturn[]
+  payments          Payment[]
 }
 
 model OrderItem {
@@ -170,11 +177,11 @@ model ProductInformation {
   product   Product @relation(fields: [productId], references: [id])
 }
 
-model ShippingOptions {
-  id      Int     @id @default(autoincrement())
-  amount  Decimal
-  orderId Int
-  order   Order   @relation(fields: [orderId], references: [id])
+model ShippingOption {
+  id     Int     @id @default(autoincrement())
+  name   String
+  amount Decimal
+  orders Order[]
 }
 
 model OrderReturn {

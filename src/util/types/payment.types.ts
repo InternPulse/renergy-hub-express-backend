@@ -3,20 +3,21 @@ import { Order } from './order.types';
 import { User } from './user.types';
 
 export interface Payment {
-  id: number;
-  userId: number;
-  orderId: number;
-  status: PaymentStatus;
-  amount: number;
-  paymentDate: Date;
-  method: PaymentMethod;
-  user: User;
-  order: Order;
+  id?: number;
+  userId?: number;
+  orderId?: number;
+  paymentId?: string;
+  status?: PaymentStatus;
+  amount?: number;
+  paymentDate?: Date;
+  method?: PaymentMethod;
+  user?: User;
+  order?: Order;
 }
 
-export interface ShippingOptions {
+export interface ShippingOption {
   id: number;
   amount: number;
-  orderId: number;
-  order: Order;
+  name: string;
+  orders: Order[];
 }

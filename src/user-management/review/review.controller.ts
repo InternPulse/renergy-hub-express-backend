@@ -28,7 +28,7 @@ export const getAllReviews = async (
   next: NextFunction
 ) => {
   try {
-    const reviews = await reviewService.getAllReviews()
+    const reviews = await reviewService.getAllReviews(req.user?.userID)
     success(res, 200, reviews, "Reviews retrieved successfully");
   } catch (error) {
     next(error);

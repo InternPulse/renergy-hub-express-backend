@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClient, User } from "@prisma/client";
 import { validateUserDetails } from "../../util/validateUserDetails";
-import { checkPasswordMatch } from "../../util/checkPasswordMatch";
+// import { checkPasswordMatch } from "../../util/checkPasswordMatch";
 import { generateToken } from "../../util/generateToken";
 import { compareSync, hashSync } from "bcryptjs";
 import sendVerificationEmail from "../../util/sendVerificationEmail";
@@ -13,6 +13,8 @@ import { generateAuthJWT } from "../../util/authJWT";
 import sendResetVerificationEmail from "../../util/sendResetVerificationEmail";
 import { checkNewPasswordMatch } from "../../util/checkNewPasswordMatch";
 import sendForgotPasswordEmail from "../../util/sendForgotPasswordEmail";
+import { validateVendorDetails } from "../../util/validateVendorDetails";
+import { validateAdminDetails } from "../../util/validateAdminDetails";
 
 const prisma = new PrismaClient();
 
@@ -21,7 +23,20 @@ let emailFirstName: string;
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    //Validate user details
+    let usertype = req.body["userType"];
+
+    //check user type
+    if (usertype != "CUSTOMER") {
+      console.error("RegisterUser Controller: Invalid user type");
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid user type",
+      });
+      return;
+    }
+
+    //validate customer details
     let result = validateUserDetails(req.body);
 
     if (result == "rejected") {
@@ -34,27 +49,18 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     //Check password match
-    const check = checkPasswordMatch(req.body);
+    // const check = checkPasswordMatch(req.body);
 
-    if (!check) {
-      res.status(400).json({
-        status: "error",
-        code: "400",
-        message: "Passwords do not match",
-      });
-      return;
-    }
+    // if (!check) {
+    //   res.status(400).json({
+    //     status: "error",
+    //     code: "400",
+    //     message: "Passwords do not match",
+    //   });
+    //   return;
+    // }
 
-    const {
-      email,
-      firstName,
-      lastName,
-      username,
-      password,
-      registerType,
-      userType,
-      phoneNumber,
-    }: User = req.body;
+    const { email, firstName, lastName, password, userType }: User = req.body;
 
     const emailFormResult = EmailValidator.validate(email);
 
@@ -73,14 +79,14 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
 
-    let userNameAlreadyExists = await prisma.user.findUnique({
-      where: {
-        username: req.body["username"],
-      },
-    });
+    // let userNameAlreadyExists = await prisma.user.findUnique({
+    //   where: {
+    //     username: req.body["username"],
+    //   },
+    // });
 
     //Check if user already exists
-    if (emailAlreadyExists || userNameAlreadyExists) {
+    if (emailAlreadyExists) {
       return res
         .status(400)
         .json({ status: "error", code: "400", message: "User already exists" });
@@ -101,23 +107,17 @@ export const registerUser = async (req: Request, res: Response) => {
         firstName,
         lastName,
         email,
-        username,
         password: hashSync(password!, 10),
         verificationToken: token,
         verificationTokenExpiresAt: time,
-        registerType,
         userType,
-        phoneNumber,
       },
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
-        username: true,
-        registerType: true,
         userType: true,
-        phoneNumber: true,
       },
     });
 
@@ -137,6 +137,245 @@ export const registerUser = async (req: Request, res: Response) => {
     return;
   } catch (error: any) {
     console.error("Register user:", error.message);
+
+    res.status(500).json({
+      status: "error",
+      code: "500",
+      message: "Internal server error",
+    });
+    return;
+  }
+};
+
+export const registerVendor = async (req: Request, res: Response) => {
+  try {
+    let usertype = req.body["userType"];
+
+    //check user type
+    if (usertype != "VENDOR") {
+      console.error("RegisterVendor Controller: Invalid user type");
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid user type",
+      });
+      return;
+    }
+
+    //validate customer details
+    let result = validateVendorDetails(req.body);
+
+    if (result == "rejected") {
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "All fields are required",
+      });
+      return;
+    }
+
+    const {
+      email,
+      firstName,
+      lastName,
+      password,
+      brandName,
+      brandType,
+      streetAddress,
+      city,
+      zipCode,
+      taxID,
+      userType,
+    }: User = req.body;
+
+    const emailFormResult = EmailValidator.validate(email);
+
+    if (!emailFormResult) {
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid email format",
+      });
+      return;
+    }
+
+    let emailAlreadyExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    //Check if user already exists
+    if (emailAlreadyExists) {
+      return res
+        .status(400)
+        .json({ status: "error", code: "400", message: "User already exists" });
+    }
+
+    //Create verification token
+    token = generateToken().toString();
+
+    //Assign firstName to email variable
+    emailFirstName = firstName;
+
+    //Verification time span
+    const time = new Date(Date.now() + 1 * 60 * 60 * 1000);
+
+    //Hash password and create new user
+    const newVendor = await prisma.user.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        brandName,
+        brandType,
+        streetAddress,
+        city,
+        zipCode,
+        taxID,
+        password: hashSync(password!, 10),
+        verificationToken: token,
+        verificationTokenExpiresAt: time,
+        userType,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        brandName: true,
+        brandType: true,
+        streetAddress: true,
+        city: true,
+        zipCode: true,
+        taxID: true,
+        userType: true,
+      },
+    });
+
+    await sendVerificationEmail(email, emailFirstName, token).catch(
+      (err: any) => {
+        console.error("Register user send verification email:", err.message);
+      }
+    );
+
+    res.status(201).json({
+      status: "success",
+      code: "201",
+      message:
+        "You have successfully registered. Please check your email for verification.",
+      data: newVendor,
+    });
+    return;
+  } catch (error: any) {
+    console.error("Register user:", error.message);
+
+    res.status(500).json({
+      status: "error",
+      code: "500",
+      message: "Internal server error",
+    });
+    return;
+  }
+};
+
+export const registerAdmin = async (req: Request, res: Response) => {
+  try {
+    let usertype = req.body["userType"];
+
+    //check user type
+    if (usertype != "ADMIN") {
+      console.error("RegisterAdmin Controller: Invalid user type");
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid user type",
+      });
+      return;
+    }
+
+    //validate customer details
+    let result = validateAdminDetails(req.body);
+
+    if (result == "rejected") {
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "All fields are required",
+      });
+      return;
+    }
+
+    const { email, firstName, lastName, password, userType }: User = req.body;
+
+    const emailFormResult = EmailValidator.validate(email);
+
+    if (!emailFormResult) {
+      res.status(400).json({
+        status: "error",
+        code: "400",
+        message: "Invalid email format",
+      });
+      return;
+    }
+
+    let emailAlreadyExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    //Check if user already exists
+    if (emailAlreadyExists) {
+      return res
+        .status(400)
+        .json({ status: "error", code: "400", message: "User already exists" });
+    }
+
+    //Create verification token
+    token = generateToken().toString();
+
+    //Assign firstName to email variable
+    emailFirstName = firstName;
+
+    //Verification time span
+    const time = new Date(Date.now() + 1 * 60 * 60 * 1000);
+
+    //Hash password and create new user
+    const newAdmin = await prisma.user.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        password: hashSync(password!, 10),
+        isVerified: "true",
+        verificationToken: token,
+        verificationTokenExpiresAt: time,
+        userType,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        userType: true,
+        isVerified: true,
+      },
+    });
+
+    ////
+    //skip send verification email for admins
+    ////
+
+    res.status(201).json({
+      status: "success",
+      code: "201",
+      message: "You have successfully registered and been verified.",
+      data: newAdmin,
+    });
+    return;
+  } catch (error: any) {
+    console.error("RegisterAdmin Controller:", error.message);
 
     res.status(500).json({
       status: "error",
@@ -292,7 +531,7 @@ export const login = async (req: Request, res: Response) => {
         res.cookie("accessToken", accessToken, {
           httpOnly: true,
           expires: expiryDate,
-          sameSite: "none",
+          sameSite: "lax",
           secure: NODE_ENV === "production",
         });
 

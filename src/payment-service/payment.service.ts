@@ -45,12 +45,15 @@ export const initializePayment = async (user: User, data: CreatePaymentDto): Pro
 
     data.amount = order.totalAmount.toNumber();
 
+    data.amount = data.amount + order.shippingOption.amount.toNumber();
+
+    delete data.callbackUrl;
     const paymentId = uuidv4();
     const payment = await paymentRepository.create({ paymentId, ...data, userId: parseInt(user?.userID), paymentDate: new Date() });
 
     const userObj = await userRepository.findByUserId(parseInt(user?.userID));
 
-    const paymentUrl = await generatePaymentUrl(<string>userObj?.email, paymentId, order.totalAmount.toNumber());
+    const paymentUrl = await generatePaymentUrl(<string>userObj?.email, paymentId, data.amount, data.callbackUrl);
   
     return { paymentUrl };
 };

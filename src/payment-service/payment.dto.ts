@@ -3,11 +3,12 @@ import { PaymentMethod } from "../util/types/enums";
 
 export interface CreatePaymentDto {
     paymentId?: string;
-    userId: number;
+    userId?: number;
     orderId?: number;
     amount?: number;
     method?: PaymentMethod;
     paymentDate?: Date;
+    callbackUrl?: string;
 }
 
 export interface PaymentDto {
@@ -92,6 +93,7 @@ export function validatePaymentDto(order: CreatePaymentDto)
         paymentId: Joi.string().allow('').optional(),  
         userId:  Joi.string().allow('').optional(),   
         orderId: Joi.number().required(), 
+        callbackUrl:  Joi.string().allow('').optional(),   
         method: Joi.string().valid(... Object.values(PaymentMethod)).required()           
         
     }).options({ abortEarly: false });

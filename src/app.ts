@@ -3,27 +3,39 @@ import { Express, Request, Response } from "express";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./util";
-import { verifyUserToken } from "./util/authorizeUser";
+// import { verifyUserToken } from "./util/authorizeUser";
 // import authRoutes from './routes/auth.route';
 import { initOrderRoutes } from "./util/init";
 import authRoutes from "./util/auth.routes";
 import userRoutes from "./util/user.routes";
-import productRoutes from "./product-management/productRoute"
-import productInformationRoutes from "./product-management/productInformationRoute"
+import productRoutes from "./product-management/productRoute";
+import productInformationRoutes from "./product-management/productInformationRoute";
 import { PORT } from "./util/secrets";
+// import cors from "cors";
 
 const apiVersion = "/api/v1";
 
 const app: Express = express();
 // Apply middleware
 app.use(express.json());
+
+app.use(function (_, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  next();
+});
+
 app.use(cookieParser());
 
 //auth routes
 app.use("/api/v1/auth", authRoutes);
 
 //user routes
-app.use("/api/v1/users", verifyUserToken, userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 //Product routes
 app.use("/api/v1/products", productRoutes);
