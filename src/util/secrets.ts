@@ -28,4 +28,4 @@ export const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 
 export const ORDER_PREFIX = process.env.ORDER_PREFIX;
 
-
+export const ACCESS_ORIGIN = process.env.ACCESS_ORIGIN;
