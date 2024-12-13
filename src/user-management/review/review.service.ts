@@ -2,121 +2,129 @@ import CustomHttpError from "../../util/custom.error";
 import prisma from "../../util/lib/client";
 import { CreateReviewDTO, UpdateReviewDTO } from "./create-review.dto";
 
-export const createReview = async (data: CreateReviewDTO) => {
+export const createReview = async (userId : number, data: CreateReviewDTO) => {
   
   const user = await prisma.user.findUnique({
-    where: {id: data.userId}
-  })
+    where: { id: userId},
+  });
 
-  if(!user) throw new CustomHttpError(404, "User not found");
-  if(user.userType != 'customer') throw new CustomHttpError(403, 'Only cusomters can create reviews');
+  if (!user) throw new CustomHttpError(404, "User not found");
+
+  if (user.userType != "CUSTOMER")
+    throw new CustomHttpError(403, "Only cusomters can create reviews");
 
   //if product exists
+ 
   const product = await prisma.product.findUnique({
-    where: { id: data.productId}
-  })
-  if(!product) throw new CustomHttpError(404, "Product not Found");
-  
+    where: { id: data.productId },
+  });
+  if (!product) throw new CustomHttpError(404, "Product not Found");
+
   return prisma.review.create({
-    data : {
+    data: {
+      userId,
       ...data,
-      datePosted : new Date()
+      datePosted: new Date(),
     },
-    include : {
-      user : {
-        select : {
+    include: {
+      user: {
+        select: {
           id: true,
-          firstName : true,
+          firstName: true,
           lastName: true,
           username: true,
-        }
+        },
       },
-      product : {
-        select : {
+      product: {
+        select: {
           id: true,
           name: true,
           image: true,
-        }
-      }
-    }
-  })
-}
+        },
+      },
+    },
+  });
+};
 
 export const getReviewById = async (reviewId: number) => {
   const review = await prisma.review.findUnique({
-    where : {id : reviewId},
-    include : {
+    where: { id: reviewId },
+    include: {
       user: {
         select: {
           id: true,
           firstName: true,
           lastName: true,
           username: true,
-        }
+        },
       },
-      product : {
+      product: {
         select: {
           id: true,
-          name : true,
-          image : true,
-        }
-      }
-    }
-  })
-  if(!review) throw new CustomHttpError(404, "Review not found");
-  return review
-}
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+  if (!review) throw new CustomHttpError(404, "Review not found");
+  return review;
+};
 
-export const getAllReviews = async (userId: number) => {
+export const getAllReviews = async () => {
   return prisma.review.findMany({
-    where: { userId },
-    include : {
+    include: {
       user: {
-        select :{
+        select: {
           id: true,
           firstName: true,
           lastName: true,
-          username : true,
-        }
-      }
-      ,product : {
-        select : {
-          id: true,
-          name : true,
-          image: true
-        }
-      }
-    }
-  })
-}
-
-export const updatedReview = async (reviewId: number, userId: number, data: UpdateReviewDTO) =>{
-  const existingReview = await prisma.review.findUnique({
-    where : {id: reviewId}
-  })
-
-  if(!existingReview) throw new CustomHttpError(404, 'Review not found');
-  if(existingReview.userId !== userId) throw new CustomHttpError(403, "Review does not bleong to this user");
-
-  return prisma.review.update({
-    where: {id: reviewId},
-    data,
-    include : {
-      user :{
-        select : {
-          id: true,
-          firstName : true,
-          lastName: true,
-          username : true
-        }
+          username: true,
+        },
       },
-      product : {
-        select : {
+      product: {
+        select: {
           id: true,
           name: true,
-          image: true
-        }
-      }
-    }
-  })
-}
+          image: true,
+        },
+      },
+    },
+  });
+};
+
+export const updateReview = async (
+  reviewId: number,
+  userId: number,
+  data: UpdateReviewDTO
+) => {
+  const existingReview = await prisma.review.findUnique({
+    where: { id: reviewId },
+  });
+
+  if (!existingReview) throw new CustomHttpError(404, "Review not found");
+  if (existingReview.userId !== userId)
+    throw new CustomHttpError(403, "Review does not bleong to this user");
+
+  return prisma.review.update({
+    where: { id: reviewId },
+    data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          username: true,
+        },
+      },
+      product: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+};
