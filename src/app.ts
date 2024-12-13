@@ -10,7 +10,7 @@ import authRoutes from "./util/auth.routes";
 import userRoutes from "./util/user.routes";
 import productRoutes from "./product-management/productRoute";
 import productInformationRoutes from "./product-management/productInformationRoute";
-import { PORT } from "./util/secrets";
+import { ACCESS_ORIGIN, PORT } from "./util/secrets";
 // import cors from "cors";
 
 const apiVersion = "/api/v1";
@@ -21,11 +21,11 @@ app.use(express.json());
 
 // app.use(cors());
 
+// "https://renergy-hub-frontendxyz.vercel.app";
+// "http://localhost:5173";
+
 app.use(function (_, res, next) {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://renergy-hub-frontendxyz.vercel.app"
-  );
+  res.setHeader("Access-Control-Allow-Origin", ACCESS_ORIGIN as string);
 
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 
