@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-Live link: is at http://
+Live link: is at https://renergy-hub-express-backend.onrender.com
 
-Doc link: https://
+Doc link: https://documenter.getpostman.com/view/36548151/2sAYBPmZm1
 
 ## Installation Instructions
 ### Prerequisites
